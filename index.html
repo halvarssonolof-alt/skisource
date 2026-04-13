@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>POLYMORPH — PS1 Low-Poly Motion Designer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <canvas id="bg-canvas"></canvas>
+
+  <div class="container">
+    <header class="header">
+      <div class="header-left">
+        <h1 class="title">POLYMORPH</h1>
+        <p class="subtitle">PS1 LOW-POLY MOTION DESIGNER</p>
+      </div>
+      <div class="status-badge" id="status-badge">
+        <span class="status-dot"></span>
+        <span class="status-text" id="status-text">READY</span>
+      </div>
+    </header>
+
+    <main class="main-grid">
+      <section class="presets-section">
+        <h2 class="section-heading">PRESETS</h2>
+        <div class="presets-grid" id="presets-grid"></div>
+      </section>
+
+      <section class="output-section">
+        <h2 class="section-heading">INPUT / OUTPUT</h2>
+
+        <div class="drop-zone" id="drop-zone">
+          <p class="drop-icon">▽</p>
+          <p class="drop-text">DROP VIDEO HERE</p>
+          <p class="drop-subtext">MP4 · MOV · WEBM &nbsp;|&nbsp; <label class="browse-label" for="file-input">BROWSE</label></p>
+          <input type="file" id="file-input" accept="video/*" hidden>
+        </div>
+
+        <div class="workbar" id="workbar" hidden>
+          <div class="workbar-label" id="workbar-label">PROCESSING FRAME 000 / 000</div>
+          <div class="workbar-track">
+            <div class="workbar-fill" id="workbar-fill"></div>
+            <span class="workbar-pct" id="workbar-pct">0%</span>
+          </div>
+          <div class="workbar-sub">
+            <span id="workbar-eta">EST. REMAINING: --:--</span>
+            <button class="btn-cancel" id="btn-cancel">■ CANCEL</button>
+          </div>
+          <div class="worker-pool-row">
+            WORKER POOL: <span class="worker-dots" id="worker-dots">■■■■</span>
+          </div>
+        </div>
+
+        <canvas class="output-canvas" id="output-canvas" hidden></canvas>
+
+        <div class="playback-panel" id="playback-panel" hidden>
+          <button class="btn" id="btn-play-loop">▶ LOOP</button>
+          <button class="btn" id="btn-stop">■ STOP</button>
+          <span class="playback-info" id="playback-info">FRAME 0 / 0</span>
+        </div>
+      </section>
+    </main>
+
+    <section class="tweak-section">
+      <button class="tweak-toggle" id="tweak-toggle">▼ TWEAK PARAMETERS</button>
+      <div class="tweak-panel" id="tweak-panel" hidden>
+        <div class="tweak-group">
+          <h3 class="tweak-heading">PARAMETERS</h3>
+          <div class="slider-row"><label>POLYGON DENSITY <span id="val-density">600</span></label><input type="range" id="sl-density" min="100" max="3000" value="600"></div>
+          <div class="slider-row"><label>EDGE SENSITIVITY <span id="val-edge">70</span></label><input type="range" id="sl-edge" min="0" max="100" value="70"></div>
+          <div class="slider-row"><label>COLOR DEPTH <span id="val-depth">24</span></label><input type="range" id="sl-depth" min="4" max="256" value="24"></div>
+          <div class="slider-row"><label>AFFINE WARP <span id="val-warp">80</span></label><input type="range" id="sl-warp" min="0" max="100" value="80"></div>
+          <div class="slider-row"><label>DITHER STRENGTH <span id="val-dither">0</span></label><input type="range" id="sl-dither" min="0" max="100" value="0"></div>
+          <div class="slider-row"><label>VERTEX JITTER <span id="val-jitter">30</span></label><input type="range" id="sl-jitter" min="0" max="100" value="30"></div>
+        </div>
+        <div class="tweak-group">
+          <h3 class="tweak-heading">FX TOGGLES</h3>
+          <div class="fx-toggles">
+            <button class="pill active" data-fx="scanlines">CRT SCANLINES</button>
+            <button class="pill" data-fx="colorBanding">COLOR BANDING</button>
+            <button class="pill" data-fx="zFighting">Z-FIGHTING</button>
+            <button class="pill" data-fx="interlaceFlash">INTERLACE FLASH</button>
+            <button class="pill" data-fx="fogEffect">FOG EFFECT</button>
+            <button class="pill" data-fx="subpixelWobble">SUB-PIXEL WOBBLE</button>
+          </div>
+        </div>
+        <div class="tweak-group">
+          <h3 class="tweak-heading">RENDER STYLE</h3>
+          <div class="radio-group">
+            <label class="radio-opt"><input type="radio" name="renderStyle" value="flat" checked> PS1 FLAT</label>
+            <label class="radio-opt"><input type="radio" name="renderStyle" value="wireframe"> WIREFRAME</label>
+            <label class="radio-opt"><input type="radio" name="renderStyle" value="gouraud"> GOURAUD</label>
+            <label class="radio-opt"><input type="radio" name="renderStyle" value="dither"> DITHER</label>
+            <label class="radio-opt"><input type="radio" name="renderStyle" value="chunky"> CHUNKY</label>
+            <label class="radio-opt"><input type="radio" name="renderStyle" value="vector"> VECTOR</label>
+          </div>
+        </div>
+        <div class="tweak-group">
+          <h3 class="tweak-heading">PALETTE</h3>
+          <div class="radio-group">
+            <label class="radio-opt"><input type="radio" name="palette" value="ps1dark" checked> PS1 DARK</label>
+            <label class="radio-opt"><input type="radio" name="palette" value="acid"> ACID</label>
+            <label class="radio-opt"><input type="radio" name="palette" value="vhswarm"> VHS WARM</label>
+            <label class="radio-opt"><input type="radio" name="palette" value="dmggreen"> DMG GREEN</label>
+            <label class="radio-opt"><input type="radio" name="palette" value="n64"> N64</label>
+            <label class="radio-opt"><input type="radio" name="palette" value="original"> ORIGINAL</label>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="export-section" id="export-section">
+      <h2 class="section-heading">EXPORT</h2>
+      <div class="export-controls">
+        <div class="aspect-row">
+          <span class="export-label">OUTPUT ASPECT:</span>
+          <button class="pill active" id="aspect-916">9:16 REELS</button>
+          <button class="pill" id="aspect-src">SOURCE</button>
+        </div>
+        <div class="export-btns">
+          <div class="export-btn-group">
+            <button class="btn btn-export" id="btn-mp4" disabled>▶ EXPORT MP4</button>
+            <span class="size-est" id="mp4-est"></span>
+          </div>
+          <div class="export-btn-group">
+            <button class="btn btn-export" id="btn-gif" disabled>▶ EXPORT GIF</button>
+            <span class="size-est" id="gif-est"></span>
+          </div>
+        </div>
+      </div>
+      <div class="export-workbar" id="export-workbar" hidden>
+        <div class="workbar-label" id="export-workbar-label">ENCODING...</div>
+        <div class="workbar-track">
+          <div class="workbar-fill" id="export-workbar-fill"></div>
+          <span class="workbar-pct" id="export-workbar-pct">0%</span>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/delaunator@5/delaunator.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gif.js/dist/gif.js"></script>
+  <script src="js/engine.js"></script>
+  <script src="js/export.js"></script>
+  <script src="js/ui.js"></script>
+</body>
+</html>
