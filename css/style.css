@@ -17,6 +17,13 @@
   --font-mono: 'Share Tech Mono', monospace;
   --radius: 2px;
   --gap: 16px;
+  --teal-dim: rgba(0,229,204,0.04);
+  --teal-glow: rgba(0,229,204,0.08);
+  --teal-mid: rgba(0,229,204,0.2);
+  --teal-hover: rgba(0,229,204,0.4);
+  --teal-soft: rgba(0,229,204,0.5);
+  --purple-dim: rgba(155,77,255,0.08);
+  --purple-hover: rgba(155,77,255,0.4);
 }
 
 /* ---------- Reset ---------- */
@@ -169,11 +176,11 @@ body::before {
 }
 .preset-card:hover {
   transform: scale(1.03);
-  border-color: rgba(0,229,204,0.5);
+  border-color: var(--teal-soft);
 }
 .preset-card.active {
   border-color: var(--teal);
-  box-shadow: 0 0 12px rgba(0,229,204,0.4);
+  box-shadow: 0 0 12px var(--teal-hover);
 }
 .preset-thumb {
   width: 100%;
@@ -219,7 +226,7 @@ body::before {
 }
 .drop-zone.drag-over {
   border-color: var(--teal);
-  background: rgba(0,229,204,0.04);
+  background: var(--teal-dim);
 }
 .drop-icon {
   font-size: 2rem;
@@ -259,8 +266,8 @@ body::before {
 .workbar-track {
   position: relative;
   height: 18px;
-  background: rgba(0,229,204,0.08);
-  border: 1px solid rgba(0,229,204,0.2);
+  background: var(--teal-glow);
+  border: 1px solid var(--teal-mid);
   border-radius: 1px;
   overflow: hidden;
 }
@@ -341,14 +348,14 @@ body::before {
   border-radius: var(--radius);
   transition: background 0.15s, color 0.15s, box-shadow 0.15s;
 }
-.btn:hover { background: var(--teal); color: #000; box-shadow: 0 0 12px rgba(0,229,204,0.4); }
+.btn:hover { background: var(--teal); color: #000; box-shadow: 0 0 12px var(--teal-hover); }
 .btn:disabled { opacity: 0.3; cursor: not-allowed; }
 .btn:disabled:hover { background: transparent; color: var(--teal); box-shadow: none; }
 .btn-export {
   border-color: var(--purple);
   color: var(--purple);
 }
-.btn-export:hover { background: var(--purple); color: #fff; box-shadow: 0 0 12px rgba(155,77,255,0.4); }
+.btn-export:hover { background: var(--purple); color: #fff; box-shadow: 0 0 12px var(--purple-hover); }
 
 /* ---------- Tweak Section ---------- */
 .tweak-section {
@@ -432,10 +439,10 @@ input[type="range"]::-webkit-slider-thumb {
 }
 .pill:hover { border-color: var(--teal); color: var(--teal); }
 .pill.active {
-  background: rgba(0,229,204,0.1);
+  background: var(--teal-glow);
   border-color: var(--teal);
   color: var(--teal);
-  box-shadow: 0 0 8px rgba(0,229,204,0.2);
+  box-shadow: 0 0 8px var(--teal-mid);
 }
 
 /* ---------- Radio Groups ---------- */
@@ -455,7 +462,7 @@ input[type="range"]::-webkit-slider-thumb {
 .radio-opt:has(input:checked) {
   border-color: var(--purple);
   color: var(--purple);
-  background: rgba(155,77,255,0.08);
+  background: var(--purple-dim);
 }
 .radio-opt input { display: none; }
 
@@ -481,7 +488,11 @@ input[type="range"]::-webkit-slider-thumb {
 @media (max-width: 768px) {
   .main-grid { grid-template-columns: 1fr; }
   .tweak-panel { grid-template-columns: 1fr; }
+  .presets-grid { grid-template-columns: 1fr 1fr; }
   .title { font-size: 1.6rem; }
+  .container { padding: 16px 12px; }
+  .drop-zone { min-height: 150px; padding: 30px 15px; }
+  .export-btns { flex-direction: column; }
   .btn { padding: 10px 20px; }
   .pill { padding: 8px 14px; }
 }
