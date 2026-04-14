@@ -3,154 +3,1242 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>POLYMORPH — PS1 Low-Poly Motion Designer</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css">
+  <title>SkiSource — Vintage Deal Finder</title>
+  <style>
+    :root {
+      --bg: #0c0c10;
+      --surface: #13131a;
+      --surface2: #1a1a24;
+      --border: #252530;
+      --border2: #32324a;
+      --text: #ddddf0;
+      --muted: #5a5a7a;
+      --green: #22c55e;
+      --amber: #f59e0b;
+      --red: #ef4444;
+      --accent: #8b7cf6;
+      --accent2: #6d5bd0;
+      --r: 7px;
+      --mono: 'Courier New', Courier, monospace;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--mono);
+      font-size: 13px;
+      min-height: 100vh;
+    }
+
+    /* subtle scanline */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,0,0,.04) 3px, rgba(0,0,0,.04) 4px);
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    /* ── NAV ── */
+    #api-banner {
+      display: none;
+      background: #2a0f0f;
+      border-bottom: 1px solid #5a1a1a;
+      color: #f87171;
+      padding: 7px 16px;
+      font-size: 12px;
+      text-align: center;
+    }
+    #api-banner a { color: #f87171; cursor: pointer; text-decoration: underline; }
+
+    .nav {
+      display: flex;
+      align-items: center;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 0 12px;
+      position: sticky;
+      top: 0;
+      z-index: 200;
+    }
+    .nav-brand {
+      color: var(--accent);
+      font-weight: bold;
+      font-size: 15px;
+      letter-spacing: 3px;
+      padding: 11px 14px 11px 4px;
+      border-right: 1px solid var(--border);
+      margin-right: 6px;
+      white-space: nowrap;
+    }
+    .nav-tab {
+      padding: 13px 14px;
+      border: none;
+      background: none;
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      transition: color .15s, border-color .15s;
+      white-space: nowrap;
+    }
+    .nav-tab:hover { color: var(--text); }
+    .nav-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+    /* ── LAYOUT ── */
+    .tab-content { display: none; padding: 24px 16px; max-width: 1080px; margin: 0 auto; }
+    .tab-content.active { display: block; }
+
+    .section-title {
+      font-size: 11px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 18px;
+    }
+
+    /* ── CARDS ── */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r);
+      padding: 16px;
+    }
+    .card + .card { margin-top: 12px; }
+
+    /* ── BUTTONS ── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 7px 13px;
+      border-radius: var(--r);
+      border: 1px solid var(--border2);
+      background: var(--surface2);
+      color: var(--text);
+      font-family: var(--mono);
+      font-size: 12px;
+      cursor: pointer;
+      min-height: 38px;
+      transition: background .12s, border-color .12s;
+      text-decoration: none;
+    }
+    .btn:hover { background: var(--border); border-color: var(--border2); }
+    .btn-primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+    .btn-primary:hover { background: var(--accent2); border-color: var(--accent2); }
+    .btn-danger { background: #2a0f0f; border-color: #5a1a1a; color: #f87171; }
+    .btn-danger:hover { background: #5a1a1a; }
+    .btn-sm { padding: 4px 10px; min-height: 30px; font-size: 11px; }
+    .btn:disabled { opacity: .45; cursor: not-allowed; }
+
+    /* ── INPUTS ── */
+    input[type=text], input[type=password], textarea, select {
+      background: var(--surface2);
+      border: 1px solid var(--border2);
+      border-radius: var(--r);
+      color: var(--text);
+      font-family: var(--mono);
+      font-size: 13px;
+      padding: 8px 11px;
+      width: 100%;
+      min-height: 40px;
+      outline: none;
+      transition: border-color .15s;
+    }
+    input[type=text]:focus, input[type=password]:focus, textarea:focus, select:focus {
+      border-color: var(--accent);
+    }
+    textarea { min-height: 130px; resize: vertical; line-height: 1.5; }
+    select { cursor: pointer; }
+    select option { background: #1a1a24; }
+
+    /* ── SCORE BADGES ── */
+    .score-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      font-size: 21px;
+      font-weight: bold;
+      flex-shrink: 0;
+    }
+    .badge-green { background: rgba(34,197,94,.12); color: var(--green); border: 2px solid var(--green); }
+    .badge-amber { background: rgba(245,158,11,.12); color: var(--amber); border: 2px solid var(--amber); }
+    .badge-red   { background: rgba(239,68,68,.12);  color: var(--red);   border: 2px solid var(--red); }
+
+    /* ── TAGS ── */
+    .tag {
+      display: inline-block;
+      padding: 2px 7px;
+      border-radius: 4px;
+      font-size: 10px;
+      letter-spacing: .8px;
+      text-transform: uppercase;
+      background: var(--surface2);
+      border: 1px solid var(--border2);
+      color: var(--muted);
+    }
+    .tag-flag   { border-color: #5a1a1a; color: #f87171; background: #2a0f0f; }
+    .tag-plat   { border-color: var(--accent); color: var(--accent); }
+    .tag-status-available { border-color: var(--green); color: var(--green); background: rgba(34,197,94,.07); }
+    .tag-status-claimed   { border-color: var(--amber); color: var(--amber); background: rgba(245,158,11,.07); }
+    .tag-status-bought    { border-color: var(--accent); color: var(--accent); background: rgba(139,124,246,.07); }
+    .tag-status-pass      { border-color: var(--border2); color: var(--muted); }
+
+    /* ── DEAL GRID ── */
+    .deal-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px,1fr)); gap: 14px; }
+
+    .deal-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r);
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .deal-card-top { display: flex; gap: 11px; }
+    .deal-card-meta { flex: 1; min-width: 0; }
+    .deal-card-verdict { font-size: 12px; color: var(--muted); font-style: italic; margin-top: 4px; line-height: 1.4; }
+    .deal-prices { display: flex; gap: 10px; font-size: 12px; flex-wrap: wrap; }
+    .deal-prices .buy { color: var(--text); }
+    .deal-prices .resale { color: var(--green); }
+    .deal-prices .margin { color: var(--amber); }
+    .deal-card-footer {
+      border-top: 1px solid var(--border);
+      padding-top: 10px;
+      display: flex;
+      gap: 6px;
+      flex-direction: column;
+    }
+    .deal-card-actions { display: flex; gap: 6px; align-items: center; justify-content: space-between; }
+
+    /* ── FILTER BAR ── */
+    .filter-bar {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r);
+      padding: 12px;
+      margin-bottom: 16px;
+      align-items: flex-end;
+    }
+    .filter-bar > div { display: flex; flex-direction: column; gap: 4px; }
+    .filter-bar select { width: auto; min-width: 130px; min-height: 34px; }
+    .filter-label { font-size: 10px; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); }
+
+    /* ── RANGE ── */
+    input[type=range] { width: 90px; accent-color: var(--accent); background: none; border: none; min-height: auto; padding: 0; }
+
+    /* ── MODE TOGGLE ── */
+    .mode-toggle { display: flex; border: 1px solid var(--border2); border-radius: var(--r); overflow: hidden; width: fit-content; margin-bottom: 18px; }
+    .mode-toggle button {
+      padding: 7px 20px;
+      border: none;
+      background: var(--surface2);
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      cursor: pointer;
+      min-height: 36px;
+      transition: all .15s;
+    }
+    .mode-toggle button.active { background: var(--accent); color: #fff; }
+
+    /* ── ERA CHIPS ── */
+    .era-chips { display: flex; gap: 6px; flex-wrap: wrap; }
+    .era-chip {
+      padding: 5px 14px;
+      border-radius: 99px;
+      border: 1px solid var(--border2);
+      background: var(--surface2);
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 12px;
+      font-family: var(--mono);
+      transition: all .15s;
+      min-height: 34px;
+      display: flex;
+      align-items: center;
+    }
+    .era-chip.active { border-color: var(--accent); color: var(--accent); background: rgba(139,124,246,.1); }
+
+    /* ── SPINNER ── */
+    .spinner {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border: 2px solid var(--border2);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin .65s linear infinite;
+      vertical-align: middle;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── PLATFORM ROW ── */
+    .platform-row { display: flex; gap: 7px; flex-wrap: wrap; margin-top: 10px; }
+
+    /* ── RESULT CARD ── */
+    .result-card { background: var(--surface); border: 1px solid var(--border2); border-radius: var(--r); padding: 18px; margin-top: 14px; }
+
+    /* ── TOASTS ── */
+    #toasts { position: fixed; bottom: 20px; right: 20px; display: flex; flex-direction: column; gap: 7px; z-index: 10000; }
+    .toast {
+      padding: 9px 15px;
+      border-radius: var(--r);
+      background: var(--surface);
+      border: 1px solid var(--border2);
+      color: var(--text);
+      font-size: 12px;
+      animation: toast-in .2s ease;
+      max-width: 280px;
+      line-height: 1.4;
+    }
+    .toast.success { border-color: var(--green); color: var(--green); }
+    .toast.error   { border-color: var(--red);   color: var(--red); }
+    .toast.info    { border-color: var(--accent); color: var(--accent); }
+    @keyframes toast-in { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:none; } }
+
+    /* ── MISC ── */
+    .row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+    .col { display: flex; flex-direction: column; gap: 8px; }
+    .lbl { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); margin-bottom: 3px; }
+    hr { border: none; border-top: 1px solid var(--border); margin: 20px 0; }
+
+    /* brand chips */
+    .brand-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: var(--surface2);
+      border: 1px solid var(--border2);
+      border-radius: 4px;
+      padding: 4px 9px;
+      font-size: 12px;
+    }
+    .brand-chip button {
+      background: none;
+      border: none;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 15px;
+      line-height: 1;
+      padding: 0;
+      display: flex;
+      align-items: center;
+    }
+    .brand-chip button:hover { color: var(--red); }
+
+    /* adv grid */
+    .adv-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
+
+    /* FB card */
+    .fb-card { background: var(--surface); border: 1px solid #5a1a1a; border-radius: var(--r); padding: 12px 16px; margin-top: 14px; }
+    .fb-card .row { gap: 10px; }
+
+    /* empty state */
+    .empty { text-align: center; padding: 56px 24px; color: var(--muted); }
+    .empty p { margin-top: 8px; font-size: 12px; }
+
+    /* search section spacing */
+    .search-section { margin-bottom: 20px; }
+
+    @media (max-width: 620px) {
+      .nav { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+      .nav-brand { display: none; }
+      .tab-content { padding: 16px 10px; }
+      .deal-grid { grid-template-columns: 1fr; }
+      .filter-bar { flex-direction: column; }
+      .adv-grid { grid-template-columns: 1fr; }
+      .nav-tab { padding: 13px 10px; font-size: 10px; }
+    }
+  </style>
 </head>
 <body>
 
-<div class="container">
-  <header class="header">
-    <div class="header-left">
-      <h1 class="title">POLYMORPH</h1>
-      <p class="subtitle">PS1 LOW-POLY MOTION DESIGNER</p>
-    </div>
-    <div class="status-badge" id="status-badge">
-      <span class="status-dot"></span>
-      <span class="status-text" id="status-text">READY</span>
-    </div>
-  </header>
-
-  <main class="main-grid">
-    <!-- LEFT: Controls -->
-    <section class="left-panel">
-
-      <h2 class="section-heading">PRESETS</h2>
-      <div class="presets-grid" id="presets-grid">
-        <button class="preset-btn active" data-preset="pure-ps1">PURE PS1</button>
-        <button class="preset-btn" data-preset="dreamcast">DREAMCAST</button>
-        <button class="preset-btn" data-preset="acid-rave">ACID RAVE</button>
-        <button class="preset-btn" data-preset="vaporwave">VAPORWAVE</button>
-        <button class="preset-btn" data-preset="gameboy">GAMEBOY</button>
-        <button class="preset-btn" data-preset="glitch-core">GLITCH CORE</button>
-      </div>
-
-      <h2 class="section-heading" style="margin-top:20px">PARAMETERS</h2>
-      <div class="sliders">
-        <div class="slider-row"><label>POLYGON DENSITY <span id="val-density">1200</span></label><input type="range" id="sl-density" min="100" max="3000" value="1200"></div>
-        <div class="slider-row"><label>EDGE SENSITIVITY <span id="val-edge">85</span></label><input type="range" id="sl-edge" min="0" max="100" value="85"></div>
-        <div class="slider-row"><label>COLOR DEPTH <span id="val-depth">24</span></label><input type="range" id="sl-depth" min="4" max="256" value="24"></div>
-        <div class="slider-row"><label>AFFINE WARP <span id="val-warp">20</span></label><input type="range" id="sl-warp" min="0" max="100" value="20"></div>
-        <div class="slider-row"><label>DITHER STRENGTH <span id="val-dither">0</span></label><input type="range" id="sl-dither" min="0" max="100" value="0"></div>
-        <div class="slider-row"><label>VERTEX JITTER <span id="val-jitter">10</span></label><input type="range" id="sl-jitter" min="0" max="100" value="10"></div>
-      </div>
-
-      <h2 class="section-heading" style="margin-top:20px">FX TOGGLES</h2>
-      <div class="fx-toggles">
-        <button class="pill active" data-fx="scanlines">CRT SCANLINES</button>
-        <button class="pill" data-fx="colorBanding">COLOR BANDING</button>
-        <button class="pill" data-fx="zFighting">Z-FIGHTING</button>
-        <button class="pill" data-fx="interlaceFlash">INTERLACE FLASH</button>
-        <button class="pill" data-fx="fogEffect">FOG EFFECT</button>
-        <button class="pill" data-fx="subpixelWobble">SUB-PIXEL WOBBLE</button>
-      </div>
-
-      <h2 class="section-heading" style="margin-top:20px">RENDER STYLE</h2>
-      <div class="radio-group">
-        <label class="radio-opt"><input type="radio" name="renderStyle" value="flat" checked> PS1 FLAT</label>
-        <label class="radio-opt"><input type="radio" name="renderStyle" value="wireframe"> WIREFRAME</label>
-        <label class="radio-opt"><input type="radio" name="renderStyle" value="gouraud"> GOURAUD</label>
-        <label class="radio-opt"><input type="radio" name="renderStyle" value="dither"> DITHER</label>
-        <label class="radio-opt"><input type="radio" name="renderStyle" value="chunky"> CHUNKY</label>
-        <label class="radio-opt"><input type="radio" name="renderStyle" value="vector"> VECTOR</label>
-      </div>
-
-      <h2 class="section-heading" style="margin-top:20px">PALETTE</h2>
-      <div class="radio-group">
-        <label class="radio-opt"><input type="radio" name="palette" value="ps1dark" checked> PS1 DARK</label>
-        <label class="radio-opt"><input type="radio" name="palette" value="acid"> ACID</label>
-        <label class="radio-opt"><input type="radio" name="palette" value="vhswarm"> VHS WARM</label>
-        <label class="radio-opt"><input type="radio" name="palette" value="dmggreen"> DMG GREEN</label>
-        <label class="radio-opt"><input type="radio" name="palette" value="n64"> N64</label>
-        <label class="radio-opt"><input type="radio" name="palette" value="original"> ORIGINAL</label>
-      </div>
-
-    </section>
-
-    <!-- RIGHT: Video + output -->
-    <section class="right-panel">
-
-      <h2 class="section-heading">INPUT / OUTPUT</h2>
-
-      <div class="drop-zone" id="drop-zone">
-        <p class="drop-icon">▽</p>
-        <p class="drop-text">DROP VIDEO HERE</p>
-        <p class="drop-subtext">MP4 · MOV · WEBM &nbsp;|&nbsp; <label class="browse-label" for="file-input">BROWSE</label></p>
-        <input type="file" id="file-input" accept="video/*" hidden>
-      </div>
-
-      <div class="workbar" id="workbar" hidden>
-        <div class="workbar-label" id="workbar-label">PROCESSING...</div>
-        <div class="workbar-track">
-          <div class="workbar-fill" id="workbar-fill"></div>
-          <span class="workbar-pct" id="workbar-pct">0%</span>
-        </div>
-        <div class="workbar-sub">
-          <span id="workbar-eta">EST. REMAINING: --:--</span>
-          <button class="btn-cancel" id="btn-cancel">■ CANCEL</button>
-        </div>
-        <div class="worker-pool-row">
-          WORKER POOL: <span class="worker-dots" id="worker-dots">■■■■</span>
-        </div>
-      </div>
-
-      <canvas id="output-canvas" hidden></canvas>
-
-      <div class="playback-panel" id="playback-panel" hidden>
-        <button class="btn" id="btn-play-loop">▶ LOOP</button>
-        <button class="btn" id="btn-stop">■ STOP</button>
-        <span class="playback-info" id="playback-info">FRAME 0 / 0</span>
-        <button class="btn" id="btn-reprocess" style="margin-left:auto;border-color:var(--purple);color:var(--purple)">↺ REPROCESS</button>
-      </div>
-
-      <div class="export-panel" id="export-panel" hidden>
-        <h2 class="section-heading" style="margin-top:12px">EXPORT</h2>
-        <div class="aspect-row">
-          <span class="export-label">ASPECT:</span>
-          <button class="pill active" id="aspect-916">9:16 REELS</button>
-          <button class="pill" id="aspect-src">SOURCE</button>
-        </div>
-        <div class="export-btns">
-          <div class="export-btn-group">
-            <button class="btn btn-export" id="btn-mp4">▶ EXPORT MP4</button>
-            <span class="size-est" id="mp4-est"></span>
-          </div>
-          <div class="export-btn-group">
-            <button class="btn btn-export" id="btn-gif">▶ EXPORT GIF</button>
-            <span class="size-est" id="gif-est"></span>
-          </div>
-        </div>
-        <div class="workbar" id="export-workbar" hidden>
-          <div class="workbar-label" id="export-workbar-label">ENCODING...</div>
-          <div class="workbar-track">
-            <div class="workbar-fill" id="export-workbar-fill"></div>
-            <span class="workbar-pct" id="export-workbar-pct">0%</span>
-          </div>
-        </div>
-      </div>
-
-    </section>
-  </main>
+<div id="api-banner">
+  No API key — AI scoring disabled.
+  <a onclick="switchTab('settings')">Set key in Settings →</a>
 </div>
 
-<!-- Hidden video element for frame extraction -->
-<video id="video-el" muted playsinline style="display:none"></video>
+<nav class="nav">
+  <div class="nav-brand">SKISRC</div>
+  <button class="nav-tab active" data-tab="search" onclick="switchTab('search')">Search</button>
+  <button class="nav-tab" data-tab="score" onclick="switchTab('score')">Score</button>
+  <button class="nav-tab" data-tab="board" onclick="switchTab('board')">Deal Board</button>
+  <button class="nav-tab" data-tab="settings" onclick="switchTab('settings')">Settings</button>
+</nav>
 
-<script src="https://cdn.jsdelivr.net/npm/delaunator@5/delaunator.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/gif.js/dist/gif.js"></script>
-<script src="js/engine.js"></script>
-<script src="js/export.js"></script>
-<script src="js/ui.js"></script>
+<!-- ═══════════ SEARCH TAB ═══════════ -->
+<div id="tab-search" class="tab-content active">
+  <div class="section-title">Search Platforms</div>
+
+  <div class="mode-toggle">
+    <button class="active" id="btn-quick" onclick="setSearchMode('quick')">Quick</button>
+    <button id="btn-advanced" onclick="setSearchMode('advanced')">Advanced</button>
+  </div>
+
+  <!-- QUICK MODE -->
+  <div id="search-quick">
+    <div class="search-section">
+      <div class="lbl">Custom query</div>
+      <div class="row" style="margin-top:6px;">
+        <input type="text" id="quick-query" placeholder='e.g. "Helly Hansen fleece jacket vintage"' style="flex:1;"
+          onkeydown="if(event.key==='Enter')openAllPlatforms()">
+        <button class="btn btn-primary" onclick="openAllPlatforms()">Open All ↗</button>
+      </div>
+      <div class="platform-row" id="quick-platform-btns"></div>
+    </div>
+
+    <div class="search-section">
+      <div class="lbl">Quick templates</div>
+      <div class="platform-row" id="template-btns"></div>
+    </div>
+
+    <div class="fb-card">
+      <div class="row">
+        <span style="color:#f87171;">FB Marketplace</span>
+        <span style="flex:1;color:var(--muted);font-size:11px;">Manual search only — paste query into Facebook</span>
+        <button class="btn btn-sm" onclick="copyQueryToClipboard()">Copy query</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ADVANCED MODE -->
+  <div id="search-advanced" style="display:none;">
+    <div class="adv-grid">
+      <div class="col">
+        <div class="lbl">Brand</div>
+        <select id="adv-brand"><option value="">Any brand</option></select>
+      </div>
+      <div class="col">
+        <div class="lbl">Item type</div>
+        <input type="text" id="adv-item" placeholder="ski jacket, one-piece, fleece...">
+      </div>
+      <div class="col">
+        <div class="lbl">Color (optional)</div>
+        <input type="text" id="adv-color" placeholder="red, yellow, neon...">
+      </div>
+      <div class="col">
+        <div class="lbl">Size (optional)</div>
+        <input type="text" id="adv-size" placeholder="L, 42, XL...">
+      </div>
+    </div>
+
+    <div class="col" style="margin-bottom:14px;">
+      <div class="lbl">Era</div>
+      <div class="era-chips">
+        <div class="era-chip" data-era="70s" onclick="toggleEra(this)">70s</div>
+        <div class="era-chip" data-era="80s" onclick="toggleEra(this)">80s</div>
+        <div class="era-chip" data-era="90s" onclick="toggleEra(this)">90s</div>
+        <div class="era-chip" data-era="00s" onclick="toggleEra(this)">00s</div>
+        <div class="era-chip active" data-era="any" onclick="toggleEra(this)">Any era</div>
+      </div>
+    </div>
+
+    <div class="col" style="margin-bottom:14px;">
+      <div class="lbl">Extra keywords</div>
+      <input type="text" id="adv-keywords" placeholder="vintage, colorblock, Gore-Tex...">
+    </div>
+
+    <div class="row" style="margin-bottom:10px;">
+      <button class="btn btn-primary" onclick="openAllPlatforms()">Open All Platforms ↗</button>
+      <button class="btn" onclick="previewQuery()">Preview query</button>
+    </div>
+
+    <div class="platform-row" id="adv-platform-btns"></div>
+
+    <div class="fb-card">
+      <div class="row">
+        <span style="color:#f87171;">FB Marketplace</span>
+        <span style="flex:1;color:var(--muted);font-size:11px;">Manual search only — paste query into Facebook</span>
+        <button class="btn btn-sm" onclick="copyQueryToClipboard()">Copy query</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ SCORE TAB ═══════════ -->
+<div id="tab-score" class="tab-content">
+  <div class="section-title">Score a Listing</div>
+
+  <div class="card col">
+    <div class="row" style="gap:14px;flex-wrap:wrap;">
+      <div class="col" style="flex:0 0 auto;">
+        <div class="lbl">Platform</div>
+        <select id="score-platform" style="width:160px;">
+          <option>Tradera</option>
+          <option>Vinted</option>
+          <option>Sellpy</option>
+          <option>eBay</option>
+          <option>Facebook</option>
+          <option>Other</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="lbl">Paste listing (title, price, description, URL — any format)</div>
+      <textarea id="listing-text" placeholder="Paste the full listing text here…"></textarea>
+    </div>
+
+    <div>
+      <button class="btn btn-primary" id="score-btn" onclick="scoreListing()">Score with AI</button>
+    </div>
+  </div>
+
+  <div id="score-result"></div>
+</div>
+
+<!-- ═══════════ DEAL BOARD TAB ═══════════ -->
+<div id="tab-board" class="tab-content">
+  <div class="row" style="justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px;">
+    <div class="section-title" style="margin:0;">Deal Board</div>
+    <div class="row" style="gap:7px;">
+      <button class="btn btn-sm" onclick="exportDeals()">Export JSON</button>
+      <label class="btn btn-sm" style="cursor:pointer;">
+        Import JSON
+        <input type="file" accept=".json" onchange="importDeals(this)" style="display:none;">
+      </label>
+    </div>
+  </div>
+
+  <div class="filter-bar">
+    <div>
+      <div class="filter-label">Status</div>
+      <select id="filter-status" onchange="renderBoard()">
+        <option value="">All</option>
+        <option>Available</option>
+        <option>Claimed</option>
+        <option>Bought</option>
+        <option>Pass</option>
+      </select>
+    </div>
+    <div>
+      <div class="filter-label">Platform</div>
+      <select id="filter-platform" onchange="renderBoard()">
+        <option value="">All</option>
+        <option>Tradera</option>
+        <option>Vinted</option>
+        <option>Sellpy</option>
+        <option>eBay</option>
+        <option>Facebook</option>
+        <option>Other</option>
+      </select>
+    </div>
+    <div>
+      <div class="filter-label">Min score: <span id="score-val">1</span></div>
+      <input type="range" id="filter-score" min="1" max="10" value="1"
+        oninput="document.getElementById('score-val').textContent=this.value;renderBoard()">
+    </div>
+    <div>
+      <div class="filter-label">Sort</div>
+      <select id="sort-by" onchange="renderBoard()">
+        <option value="score">Score ↓</option>
+        <option value="price">Price ↑</option>
+        <option value="date">Newest</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="deal-grid" id="deal-grid"></div>
+  <div class="empty" id="board-empty" style="display:none;">
+    <div style="font-size:32px;">🎿</div>
+    <p>No deals yet. Score a listing and save it to the board.</p>
+  </div>
+</div>
+
+<!-- ═══════════ SETTINGS TAB ═══════════ -->
+<div id="tab-settings" class="tab-content">
+  <div class="section-title">Settings</div>
+
+  <div class="card col" style="gap:16px;margin-bottom:14px;">
+    <div>
+      <div class="lbl" style="margin-bottom:6px;">Anthropic API key</div>
+      <div class="row">
+        <input type="password" id="api-key-input" placeholder="sk-ant-api03-…" style="flex:1;">
+        <button class="btn btn-sm" id="show-key-btn" onclick="toggleKeyVisibility()">Show</button>
+        <button class="btn btn-sm btn-primary" onclick="saveApiKey()">Save</button>
+      </div>
+      <div style="color:var(--muted);font-size:11px;margin-top:5px;">Never stored anywhere except your browser's localStorage.</div>
+    </div>
+    <div>
+      <div class="lbl" style="margin-bottom:6px;">Your name (default "claimed by")</div>
+      <div class="row">
+        <input type="text" id="team-name-input" placeholder="Your name…" style="flex:1;">
+        <button class="btn btn-sm btn-primary" onclick="saveTeamName()">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card col" style="margin-bottom:14px;">
+    <div class="lbl">Target brands</div>
+    <div id="brand-list" class="row" style="flex-wrap:wrap;gap:7px;min-height:32px;"></div>
+    <div class="row" style="margin-top:4px;">
+      <input type="text" id="brand-input" placeholder="Add brand…" style="flex:1;"
+        onkeydown="if(event.key==='Enter')addBrand()">
+      <button class="btn btn-sm btn-primary" onclick="addBrand()">Add</button>
+    </div>
+  </div>
+
+  <div class="card" style="border-color:#5a1a1a;">
+    <div class="lbl" style="color:#f87171;margin-bottom:10px;">Danger Zone</div>
+    <button class="btn btn-danger" onclick="clearAllDeals()">Clear all deals</button>
+  </div>
+</div>
+
+<div id="toasts"></div>
+
+<script>
+'use strict';
+
+// ══════════════════════════════════════════
+//  CONSTANTS
+// ══════════════════════════════════════════
+const DEFAULT_BRANDS = [
+  'Helly Hansen','Burton','Volcom','Bogner','Ellesse',
+  'Killy','Nevica',"O'Neill",'Kjus','Phenix','Alpina','Descente'
+];
+
+const TEMPLATES = [
+  'Helly Hansen fleece 90s',
+  'Burton snowboard jacket vintage',
+  'Nevica ski suit',
+  'Bogner ski jacket',
+  'Ellesse ski 80s',
+  'Killy vintage'
+];
+
+const PLATFORMS = [
+  {
+    name: 'Tradera',
+    url: q => `https://www.tradera.com/search?q=${encodeURIComponent(q)}`
+  },
+  {
+    name: 'Vinted',
+    url: q => `https://www.vinted.se/catalog?search_text=${encodeURIComponent(q)}`
+  },
+  {
+    name: 'Sellpy',
+    url: q => `https://www.sellpy.se/search?query=${encodeURIComponent(q)}`
+  },
+  {
+    name: 'eBay',
+    url: q => `https://www.ebay.com/sch/i.html?_nkw=${encodeURIComponent(q)}&LH_PrefLoc=3`
+  }
+];
+
+const COLOR_MAP_SV = {
+  red:'röd', blue:'blå', green:'grön', yellow:'gul',
+  white:'vit', black:'svart', orange:'orange', purple:'lila',
+  pink:'rosa', grey:'grå', gray:'grå', brown:'brun', beige:'beige'
+};
+
+const ERA_MAP_EN = { '70s':'1970s', '80s':'1980s', '90s':'1990s', '00s':'2000s' };
+const ERA_MAP_SV = { '70s':'70-tal', '80s':'80-tal', '90s':'90-tal', '00s':'2000-tal' };
+
+const SYSTEM_PROMPT = `You are an expert in vintage ski and snowboard clothing resale. You evaluate thrift listings for a Swedish resale business. Score each listing from 1-10 based on:
+- Brand tier (Bogner/Kjus = highest, Helly Hansen/Burton/Nevica = high, others = medium)
+- Era/collectibility (80s-90s = best, early 2000s = good, 2010s+ = lower)
+- Condition signals from the description (like new/mint = best, good used = fine, worn/damaged = low)
+- Price vs likely resale value in SEK (under 200 SEK for a good piece = great deal)
+- Resale potential in the Swedish/European vintage market
+
+Return ONLY a JSON object with these fields:
+{
+  "score": number (1-10),
+  "brand_tier": "high" | "medium" | "low",
+  "era": "70s" | "80s" | "90s" | "00s" | "2010s" | "unknown",
+  "condition": "mint" | "good" | "fair" | "poor" | "unknown",
+  "buy_price_sek": number or null,
+  "estimated_resale_sek": number or null,
+  "margin_estimate": "e.g. 3-4x" or "unknown",
+  "verdict": "one sharp sentence max 20 words on whether to buy",
+  "flags": ["array of red flags, e.g. no era info, synthetic material, high competition item"]
+}`;
+
+// ══════════════════════════════════════════
+//  STATE
+// ══════════════════════════════════════════
+let S = {
+  deals: [],
+  brands: [...DEFAULT_BRANDS],
+  apiKey: '',
+  teamName: '',
+  activeTab: 'search'
+};
+
+function loadState() {
+  try {
+    const d = localStorage.getItem('ski_deals');
+    const b = localStorage.getItem('ski_brands');
+    const k = localStorage.getItem('ski_apikey');
+    const n = localStorage.getItem('ski_teamname');
+    if (d) S.deals  = JSON.parse(d);
+    if (b) S.brands = JSON.parse(b);
+    if (k) S.apiKey  = k;
+    if (n) S.teamName = n;
+  } catch(e) { console.error('loadState', e); }
+}
+
+function save() {
+  try {
+    localStorage.setItem('ski_deals',   JSON.stringify(S.deals));
+    localStorage.setItem('ski_brands',  JSON.stringify(S.brands));
+    localStorage.setItem('ski_apikey',  S.apiKey);
+    localStorage.setItem('ski_teamname',S.teamName);
+  } catch(e) { console.error('saveState', e); }
+}
+
+// ══════════════════════════════════════════
+//  NAVIGATION
+// ══════════════════════════════════════════
+function switchTab(name) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  document.querySelector(`[data-tab="${name}"]`).classList.add('active');
+  S.activeTab = name;
+  if (name === 'board')    renderBoard();
+  if (name === 'settings') renderSettings();
+  if (name === 'search')   renderSearch();
+}
+
+// ══════════════════════════════════════════
+//  UTILITIES
+// ══════════════════════════════════════════
+function uid() { return crypto.randomUUID(); }
+
+function relTime(iso) {
+  const d = Date.now() - new Date(iso).getTime();
+  const m = Math.floor(d / 60000);
+  const h = Math.floor(d / 3600000);
+  const dy = Math.floor(d / 86400000);
+  if (m < 1)  return 'just now';
+  if (m < 60) return `${m}m ago`;
+  if (h < 24) return `${h}h ago`;
+  return `${dy}d ago`;
+}
+
+function toast(msg, type = 'info') {
+  const el = document.createElement('div');
+  el.className = `toast ${type}`;
+  el.textContent = msg;
+  document.getElementById('toasts').appendChild(el);
+  setTimeout(() => { el.style.opacity = '0'; el.style.transition = 'opacity .3s'; setTimeout(() => el.remove(), 300); }, 2700);
+}
+
+function badgeClass(n) {
+  return n >= 8 ? 'badge-green' : n >= 5 ? 'badge-amber' : 'badge-red';
+}
+
+function esc(s) {
+  return String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function extractUrl(text) {
+  const m = text.match(/https?:\/\/[^\s"'<>]+/);
+  return m ? m[0] : '';
+}
+
+// ══════════════════════════════════════════
+//  SEARCH
+// ══════════════════════════════════════════
+let searchMode = 'quick';
+let selectedEras = new Set(['any']);
+
+function setSearchMode(mode) {
+  searchMode = mode;
+  document.getElementById('search-quick').style.display    = mode === 'quick' ? '' : 'none';
+  document.getElementById('search-advanced').style.display = mode === 'advanced' ? '' : 'none';
+  document.getElementById('btn-quick').classList.toggle('active', mode === 'quick');
+  document.getElementById('btn-advanced').classList.toggle('active', mode === 'advanced');
+}
+
+function toggleEra(el) {
+  const era = el.dataset.era;
+  if (era === 'any') {
+    selectedEras = new Set(['any']);
+    document.querySelectorAll('.era-chip').forEach(c => c.classList.remove('active'));
+    el.classList.add('active');
+    return;
+  }
+  selectedEras.delete('any');
+  document.querySelector('[data-era="any"]').classList.remove('active');
+  if (selectedEras.has(era)) {
+    selectedEras.delete(era);
+    el.classList.remove('active');
+  } else {
+    selectedEras.add(era);
+    el.classList.add('active');
+  }
+  if (selectedEras.size === 0) {
+    selectedEras.add('any');
+    document.querySelector('[data-era="any"]').classList.add('active');
+  }
+}
+
+function getAdvancedFields() {
+  return {
+    brand:    document.getElementById('adv-brand').value,
+    item:     document.getElementById('adv-item').value.trim(),
+    color:    document.getElementById('adv-color').value.trim(),
+    size:     document.getElementById('adv-size').value.trim(),
+    keywords: document.getElementById('adv-keywords').value.trim(),
+    eras:     [...selectedEras]
+  };
+}
+
+function buildGenericQuery(f) {
+  const parts = [];
+  if (f.brand)    parts.push(f.brand);
+  if (f.item)     parts.push(f.item);
+  if (!f.eras.includes('any') && f.eras.length) {
+    parts.push(f.eras.map(e => ERA_MAP_EN[e] || e).join(' '));
+  }
+  if (f.color)    parts.push(f.color);
+  if (f.size)     parts.push(f.size);
+  if (f.keywords) parts.push(f.keywords);
+  return parts.filter(Boolean).join(' ');
+}
+
+function buildTraderaQuery(f) {
+  const parts = [];
+  if (f.brand)    parts.push(f.brand);
+  if (f.item)     parts.push(f.item);
+  if (!f.eras.includes('any') && f.eras.length) {
+    parts.push(f.eras.map(e => ERA_MAP_SV[e] || e).join(' '));
+  }
+  if (f.color) {
+    const sv = COLOR_MAP_SV[f.color.toLowerCase()];
+    parts.push(sv || f.color);
+  }
+  if (f.size)     parts.push(f.size);
+  if (f.keywords) parts.push(f.keywords);
+  return parts.filter(Boolean).join(' ');
+}
+
+function getQuery() {
+  if (searchMode === 'quick') {
+    return document.getElementById('quick-query').value.trim();
+  }
+  const f = getAdvancedFields();
+  return buildGenericQuery(f);
+}
+
+function getPlatformQuery(platformName) {
+  if (searchMode === 'advanced') {
+    const f = getAdvancedFields();
+    return platformName === 'Tradera' ? buildTraderaQuery(f) : buildGenericQuery(f);
+  }
+  return document.getElementById('quick-query').value.trim();
+}
+
+function openPlatform(platformName) {
+  const platform = PLATFORMS.find(p => p.name === platformName);
+  if (!platform) return;
+  const q = getPlatformQuery(platformName);
+  if (!q) { toast('Enter a search query first', 'error'); return; }
+  window.open(platform.url(q), '_blank');
+}
+
+function openAllPlatforms() {
+  const base = getQuery();
+  if (!base) { toast('Enter a search query first', 'error'); return; }
+  PLATFORMS.forEach(p => {
+    const q = getPlatformQuery(p.name);
+    window.open(p.url(q), '_blank');
+  });
+}
+
+function previewQuery() {
+  const f = getAdvancedFields();
+  const generic = buildGenericQuery(f);
+  const tradera = buildTraderaQuery(f);
+  if (!generic) { toast('Fill in at least one field', 'error'); return; }
+  toast(`Generic: "${generic}"`, 'info');
+  if (tradera !== generic) setTimeout(() => toast(`Tradera (SE): "${tradera}"`, 'info'), 400);
+}
+
+function copyQueryToClipboard() {
+  const q = getQuery();
+  if (!q) { toast('Enter a search query first', 'error'); return; }
+  navigator.clipboard.writeText(q)
+    .then(() => toast('Query copied to clipboard ✓', 'success'))
+    .catch(() => toast('Copy failed — try manually', 'error'));
+}
+
+function launchTemplate(query) {
+  if (searchMode === 'advanced') setSearchMode('quick');
+  document.getElementById('quick-query').value = query;
+  openAllPlatforms();
+}
+
+function renderSearch() {
+  // Template buttons
+  document.getElementById('template-btns').innerHTML = TEMPLATES
+    .map(t => `<button class="btn" onclick="launchTemplate(${JSON.stringify(t)})">${t} ↗</button>`)
+    .join('');
+
+  // Quick platform buttons
+  document.getElementById('quick-platform-btns').innerHTML = PLATFORMS
+    .map(p => `<button class="btn btn-sm" onclick="openPlatform('${p.name}')">${p.name} ↗</button>`)
+    .join('');
+
+  // Advanced platform buttons
+  document.getElementById('adv-platform-btns').innerHTML = PLATFORMS
+    .map(p => `<button class="btn btn-sm" onclick="openPlatform('${p.name}')">${p.name} ↗</button>`)
+    .join('');
+
+  // Brand dropdown
+  const sel = document.getElementById('adv-brand');
+  sel.innerHTML = '<option value="">Any brand</option>' +
+    S.brands.map(b => `<option>${esc(b)}</option>`).join('');
+}
+
+// ══════════════════════════════════════════
+//  SCORE / CLAUDE API
+// ══════════════════════════════════════════
+let lastScore = null;
+
+async function scoreListing() {
+  const text = document.getElementById('listing-text').value.trim();
+  const platform = document.getElementById('score-platform').value;
+
+  if (!text) { toast('Paste a listing first', 'error'); return; }
+  if (!S.apiKey) {
+    toast('No API key — go to Settings', 'error');
+    switchTab('settings');
+    return;
+  }
+
+  const btn = document.getElementById('score-btn');
+  const out = document.getElementById('score-result');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Scoring…';
+  out.innerHTML = '';
+
+  try {
+    const result = await callClaude(text, platform);
+    lastScore = { result, text, platform };
+    out.innerHTML = scoreCardHtml(result, platform, true);
+  } catch(e) {
+    out.innerHTML = `<div class="result-card" style="border-color:var(--red);">
+      <div style="color:var(--red);font-weight:bold;margin-bottom:8px;">Error</div>
+      <pre style="white-space:pre-wrap;color:var(--muted);font-size:11px;">${esc(e.message)}</pre>
+      <button class="btn btn-sm" style="margin-top:12px;" onclick="scoreListing()">Retry</button>
+    </div>`;
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = 'Score with AI';
+  }
+}
+
+async function callClaude(text, platform) {
+  const resp = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-api-key': S.apiKey,
+      'anthropic-version': '2023-06-01',
+      'anthropic-dangerous-direct-browser-access': 'true'
+    },
+    body: JSON.stringify({
+      model: 'claude-sonnet-4-20250514',
+      max_tokens: 1024,
+      system: SYSTEM_PROMPT,
+      messages: [{ role: 'user', content: `Platform: ${platform}\n\n${text}` }]
+    })
+  });
+
+  if (!resp.ok) {
+    const body = await resp.text();
+    throw new Error(`API ${resp.status}: ${body.slice(0, 300)}`);
+  }
+
+  const data = await resp.json();
+  const raw = data.content[0].text;
+  const match = raw.match(/\{[\s\S]*\}/);
+  if (!match) throw new Error('No JSON found in response:\n' + raw.slice(0, 300));
+  return JSON.parse(match[0]);
+}
+
+function scoreCardHtml(r, platform, showSave) {
+  const cls = badgeClass(r.score);
+  const flags = (r.flags || []).map(f => `<span class="tag tag-flag">${esc(f)}</span>`).join(' ');
+  const saveBtn = showSave
+    ? `<button class="btn btn-primary" style="margin-top:14px;" onclick="saveDeal()">Save to Deal Board</button>`
+    : '';
+  return `<div class="result-card">
+    <div class="deal-card-top" style="margin-bottom:12px;">
+      <div class="score-badge ${cls}">${r.score}</div>
+      <div class="deal-card-meta">
+        <div class="row" style="gap:5px;flex-wrap:wrap;margin-bottom:5px;">
+          <span class="tag">${esc(r.brand_tier || '?')} tier</span>
+          <span class="tag">${esc(r.era || 'era?')}</span>
+          <span class="tag">${esc(r.condition || '?')}</span>
+          <span class="tag tag-plat">${esc(platform)}</span>
+        </div>
+        <div class="deal-card-verdict">"${esc(r.verdict)}"</div>
+      </div>
+    </div>
+    <div class="deal-prices" style="margin-bottom:8px;">
+      ${r.buy_price_sek  != null ? `<span class="buy">Buy: ${r.buy_price_sek} SEK</span>` : ''}
+      ${r.estimated_resale_sek != null ? `<span class="resale">Resale: ~${r.estimated_resale_sek} SEK</span>` : ''}
+      ${r.margin_estimate ? `<span class="margin">×${esc(r.margin_estimate)}</span>` : ''}
+    </div>
+    ${flags ? `<div style="margin-bottom:6px;">${flags}</div>` : ''}
+    ${saveBtn}
+  </div>`;
+}
+
+function saveDeal() {
+  if (!lastScore) return;
+  const { result: r, text, platform } = lastScore;
+
+  let url = extractUrl(text);
+  if (!url) {
+    url = prompt('No URL found in pasted text. Paste the listing URL (or leave blank):') || '';
+  }
+
+  const deal = {
+    id:                  uid(),
+    score:               r.score,
+    brand_tier:          r.brand_tier || 'unknown',
+    era:                 r.era || 'unknown',
+    condition:           r.condition || 'unknown',
+    buy_price_sek:       r.buy_price_sek,
+    estimated_resale_sek:r.estimated_resale_sek,
+    margin_estimate:     r.margin_estimate || 'unknown',
+    verdict:             r.verdict || '',
+    flags:               r.flags || [],
+    platform,
+    listing_url:         url,
+    raw_paste:           text,
+    claimed_by:          S.teamName,
+    status:              'Available',
+    created_at:          new Date().toISOString()
+  };
+
+  S.deals.unshift(deal);
+  save();
+  toast('Deal saved to board!', 'success');
+}
+
+// ══════════════════════════════════════════
+//  DEAL BOARD
+// ══════════════════════════════════════════
+function renderBoard() {
+  const statusF   = document.getElementById('filter-status').value;
+  const platformF = document.getElementById('filter-platform').value;
+  const minScore  = parseInt(document.getElementById('filter-score').value) || 1;
+  const sortBy    = document.getElementById('sort-by').value;
+
+  let deals = S.deals.filter(d => {
+    if (statusF   && d.status   !== statusF)   return false;
+    if (platformF && d.platform !== platformF)  return false;
+    if (d.score < minScore)                     return false;
+    return true;
+  });
+
+  deals = deals.slice().sort((a, b) => {
+    if (sortBy === 'score') return b.score - a.score;
+    if (sortBy === 'price') return (a.buy_price_sek ?? 9999) - (b.buy_price_sek ?? 9999);
+    return new Date(b.created_at) - new Date(a.created_at);
+  });
+
+  const grid  = document.getElementById('deal-grid');
+  const empty = document.getElementById('board-empty');
+  if (deals.length === 0) { grid.innerHTML = ''; empty.style.display = ''; return; }
+  empty.style.display = 'none';
+  grid.innerHTML = deals.map(dealCardHtml).join('');
+}
+
+function dealCardHtml(d) {
+  const cls   = badgeClass(d.score);
+  const flags = (d.flags || []).map(f => `<span class="tag tag-flag">${esc(f)}</span>`).join(' ');
+  const stCls = 'tag-status-' + (d.status || 'available').toLowerCase();
+  const urlBtn = d.listing_url
+    ? `<a href="${esc(d.listing_url)}" target="_blank" rel="noopener" class="btn btn-sm">Open ↗</a>`
+    : '';
+  const statuses = ['Available','Claimed','Bought','Pass'];
+  return `<div class="deal-card">
+    <div class="deal-card-top">
+      <div class="score-badge ${cls}">${d.score}</div>
+      <div class="deal-card-meta">
+        <div class="row" style="gap:4px;flex-wrap:wrap;margin-bottom:4px;">
+          <span class="tag">${esc(d.brand_tier)} tier</span>
+          <span class="tag">${esc(d.era)}</span>
+          <span class="tag">${esc(d.condition)}</span>
+          <span class="tag tag-plat">${esc(d.platform)}</span>
+        </div>
+        <div class="deal-card-verdict">"${esc(d.verdict)}"</div>
+      </div>
+    </div>
+    <div class="deal-prices">
+      ${d.buy_price_sek  != null ? `<span class="buy">Buy: ${d.buy_price_sek} SEK</span>` : ''}
+      ${d.estimated_resale_sek != null ? `<span class="resale">~${d.estimated_resale_sek} SEK</span>` : ''}
+      ${d.margin_estimate ? `<span class="margin">×${esc(d.margin_estimate)}</span>` : ''}
+    </div>
+    ${flags ? `<div style="display:flex;gap:4px;flex-wrap:wrap;">${flags}</div>` : ''}
+    <div class="deal-card-footer">
+      <div class="row" style="gap:6px;">
+        <select class="btn btn-sm" style="width:auto;min-height:30px;"
+          onchange="updateDeal('${d.id}','status',this.value)">
+          ${statuses.map(s => `<option${d.status===s?' selected':''}>${s}</option>`).join('')}
+        </select>
+        <input type="text" value="${esc(d.claimed_by || '')}" placeholder="Claimed by…"
+          style="flex:1;min-height:30px;font-size:11px;"
+          onchange="updateDeal('${d.id}','claimed_by',this.value)">
+      </div>
+      <div class="deal-card-actions">
+        <span style="color:var(--muted);font-size:10px;">${relTime(d.created_at)}</span>
+        <div class="row" style="gap:5px;">
+          ${urlBtn}
+          <button class="btn btn-sm btn-danger" onclick="deleteDeal('${d.id}')">Delete</button>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function updateDeal(id, field, value) {
+  const d = S.deals.find(x => x.id === id);
+  if (!d) return;
+  d[field] = value;
+  save();
+}
+
+function deleteDeal(id) {
+  if (!confirm('Delete this deal?')) return;
+  S.deals = S.deals.filter(d => d.id !== id);
+  save();
+  renderBoard();
+  toast('Deal deleted', 'info');
+}
+
+// ══════════════════════════════════════════
+//  EXPORT / IMPORT
+// ══════════════════════════════════════════
+function exportDeals() {
+  if (S.deals.length === 0) { toast('No deals to export', 'error'); return; }
+  const date = new Date().toISOString().slice(0, 10);
+  const blob = new Blob([JSON.stringify(S.deals, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `deals-${date}.json`;
+  a.click();
+  URL.revokeObjectURL(a.href);
+  toast(`Exported ${S.deals.length} deal${S.deals.length !== 1 ? 's' : ''}`, 'success');
+}
+
+function importDeals(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const incoming = JSON.parse(e.target.result);
+      if (!Array.isArray(incoming)) throw new Error('Expected an array');
+      const existing = new Set(S.deals.map(d => d.id));
+      const fresh = incoming.filter(d => d && d.id && !existing.has(d.id));
+      S.deals.unshift(...fresh);
+      save();
+      if (S.activeTab === 'board') renderBoard();
+      toast(`Imported ${fresh.length} new deal${fresh.length !== 1 ? 's' : ''}`, 'success');
+    } catch(err) {
+      toast('Import failed: ' + err.message, 'error');
+    }
+    input.value = '';
+  };
+  reader.readAsText(file);
+}
+
+// ══════════════════════════════════════════
+//  SETTINGS
+// ══════════════════════════════════════════
+function renderSettings() {
+  document.getElementById('api-key-input').value   = S.apiKey;
+  document.getElementById('team-name-input').value = S.teamName;
+  renderBrandList();
+}
+
+function renderBrandList() {
+  document.getElementById('brand-list').innerHTML = S.brands
+    .map(b => `<span class="brand-chip">${esc(b)}<button onclick="removeBrand(${JSON.stringify(b)})" title="Remove">×</button></span>`)
+    .join('');
+}
+
+function saveApiKey() {
+  S.apiKey = document.getElementById('api-key-input').value.trim();
+  save();
+  updateApiBanner();
+  toast('API key saved', 'success');
+}
+
+function saveTeamName() {
+  S.teamName = document.getElementById('team-name-input').value.trim();
+  save();
+  toast('Name saved', 'success');
+}
+
+function toggleKeyVisibility() {
+  const inp = document.getElementById('api-key-input');
+  const btn = document.getElementById('show-key-btn');
+  if (inp.type === 'password') { inp.type = 'text';     btn.textContent = 'Hide'; }
+  else                         { inp.type = 'password'; btn.textContent = 'Show'; }
+}
+
+function addBrand() {
+  const inp = document.getElementById('brand-input');
+  const brand = inp.value.trim();
+  if (!brand) return;
+  if (S.brands.includes(brand)) { toast('Already in list', 'error'); return; }
+  S.brands.push(brand);
+  save();
+  renderBrandList();
+  renderSearch(); // update advanced dropdown
+  inp.value = '';
+  toast(`Added "${brand}"`, 'success');
+}
+
+function removeBrand(brand) {
+  S.brands = S.brands.filter(b => b !== brand);
+  save();
+  renderBrandList();
+  renderSearch();
+}
+
+function clearAllDeals() {
+  if (!confirm('Delete ALL deals? This cannot be undone.')) return;
+  S.deals = [];
+  save();
+  if (S.activeTab === 'board') renderBoard();
+  toast('All deals cleared', 'info');
+}
+
+function updateApiBanner() {
+  document.getElementById('api-banner').style.display = S.apiKey ? 'none' : '';
+}
+
+// ══════════════════════════════════════════
+//  INIT
+// ══════════════════════════════════════════
+loadState();
+updateApiBanner();
+renderSearch();
+</script>
 </body>
 </html>
