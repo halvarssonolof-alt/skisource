@@ -6,168 +6,148 @@
   <title>SkiSource — Vintage Deal Finder</title>
   <style>
     :root {
-      --bg: #0c0c10;
-      --surface: #13131a;
-      --surface2: #1a1a24;
-      --border: #252530;
-      --border2: #32324a;
-      --text: #ddddf0;
-      --muted: #5a5a7a;
-      --green: #22c55e;
-      --amber: #f59e0b;
-      --red: #ef4444;
-      --accent: #8b7cf6;
-      --accent2: #6d5bd0;
-      --r: 7px;
-      --mono: 'Courier New', Courier, monospace;
+      --bg:#0c0c10; --surface:#13131a; --surface2:#1a1a24;
+      --border:#252530; --border2:#32324a;
+      --text:#ddddf0; --muted:#5a5a7a;
+      --green:#22c55e; --amber:#f59e0b; --red:#ef4444;
+      --accent:#8b7cf6; --accent2:#6d5bd0;
+      --r:7px; --mono:'Courier New',Courier,monospace;
     }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { background: var(--bg); color: var(--text); font-family: var(--mono); font-size: 13px; min-height: 100vh; }
-
-    body::before {
-      content: '';
-      position: fixed; inset: 0;
-      background: repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,0,0,.04) 3px, rgba(0,0,0,.04) 4px);
-      pointer-events: none; z-index: 9999;
-    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{background:var(--bg);color:var(--text);font-family:var(--mono);font-size:13px;min-height:100vh}
+    body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,.04) 3px,rgba(0,0,0,.04) 4px);pointer-events:none;z-index:9999}
 
     /* NAV */
-    #api-banner {
-      display: none;
-      background: #2a0f0f; border-bottom: 1px solid #5a1a1a;
-      color: #f87171; padding: 7px 16px; font-size: 12px; text-align: center;
-    }
-    #api-banner a { color: #f87171; cursor: pointer; text-decoration: underline; }
-    .nav {
-      display: flex; align-items: center;
-      background: var(--surface); border-bottom: 1px solid var(--border);
-      padding: 0 12px; position: sticky; top: 0; z-index: 200;
-    }
-    .nav-brand { color: var(--accent); font-weight: bold; font-size: 15px; letter-spacing: 3px; padding: 11px 14px 11px 4px; border-right: 1px solid var(--border); margin-right: 6px; white-space: nowrap; }
-    .nav-tab { padding: 13px 14px; border: none; background: none; color: var(--muted); font-family: var(--mono); font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase; cursor: pointer; border-bottom: 2px solid transparent; transition: color .15s, border-color .15s; white-space: nowrap; }
-    .nav-tab:hover { color: var(--text); }
-    .nav-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+    #api-banner{display:none;background:#2a0f0f;border-bottom:1px solid #5a1a1a;color:#f87171;padding:7px 16px;font-size:12px;text-align:center}
+    #api-banner a{color:#f87171;cursor:pointer;text-decoration:underline}
+    .nav{display:flex;align-items:center;background:var(--surface);border-bottom:1px solid var(--border);padding:0 12px;position:sticky;top:0;z-index:200}
+    .nav-brand{color:var(--accent);font-weight:bold;font-size:15px;letter-spacing:3px;padding:11px 14px 11px 4px;border-right:1px solid var(--border);margin-right:6px;white-space:nowrap}
+    .nav-tab{padding:13px 14px;border:none;background:none;color:var(--muted);font-family:var(--mono);font-size:11px;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;border-bottom:2px solid transparent;transition:color .15s,border-color .15s;white-space:nowrap}
+    .nav-tab:hover{color:var(--text)} .nav-tab.active{color:var(--accent);border-bottom-color:var(--accent)}
 
     /* LAYOUT */
-    .tab-content { display: none; padding: 24px 16px; max-width: 1080px; margin: 0 auto; }
-    .tab-content.active { display: block; }
-    .section-title { font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: var(--accent); margin-bottom: 18px; }
+    .tab-content{display:none;padding:24px 16px;max-width:1080px;margin:0 auto}
+    .tab-content.active{display:block}
+    .section-title{font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--accent);margin-bottom:18px}
 
     /* CARDS */
-    .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); padding: 16px; }
+    .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:16px}
 
     /* BUTTONS */
-    .btn { display: inline-flex; align-items: center; gap: 5px; padding: 7px 13px; border-radius: var(--r); border: 1px solid var(--border2); background: var(--surface2); color: var(--text); font-family: var(--mono); font-size: 12px; cursor: pointer; min-height: 38px; transition: background .12s; text-decoration: none; }
-    .btn:hover { background: var(--border); }
-    .btn-primary { background: var(--accent); border-color: var(--accent); color: #fff; }
-    .btn-primary:hover { background: var(--accent2); border-color: var(--accent2); }
-    .btn-danger { background: #2a0f0f; border-color: #5a1a1a; color: #f87171; }
-    .btn-danger:hover { background: #5a1a1a; }
-    .btn-sm { padding: 4px 10px; min-height: 30px; font-size: 11px; }
-    .btn:disabled { opacity: .4; cursor: not-allowed; }
+    .btn{display:inline-flex;align-items:center;gap:5px;padding:7px 13px;border-radius:var(--r);border:1px solid var(--border2);background:var(--surface2);color:var(--text);font-family:var(--mono);font-size:12px;cursor:pointer;min-height:38px;transition:background .12s;text-decoration:none}
+    .btn:hover{background:var(--border)}
+    .btn-primary{background:var(--accent);border-color:var(--accent);color:#fff}
+    .btn-primary:hover{background:var(--accent2);border-color:var(--accent2)}
+    .btn-danger{background:#2a0f0f;border-color:#5a1a1a;color:#f87171}
+    .btn-danger:hover{background:#5a1a1a}
+    .btn-sm{padding:4px 10px;min-height:30px;font-size:11px}
+    .btn:disabled{opacity:.4;cursor:not-allowed}
 
     /* INPUTS */
-    input[type=text], input[type=password], textarea, select { background: var(--surface2); border: 1px solid var(--border2); border-radius: var(--r); color: var(--text); font-family: var(--mono); font-size: 13px; padding: 8px 11px; width: 100%; min-height: 40px; outline: none; transition: border-color .15s; }
-    input:focus, textarea:focus, select:focus { border-color: var(--accent); }
-    textarea { min-height: 130px; resize: vertical; line-height: 1.5; }
-    select { cursor: pointer; }
-    select option { background: #1a1a24; }
+    input[type=text],input[type=password],input[type=number],textarea,select{background:var(--surface2);border:1px solid var(--border2);border-radius:var(--r);color:var(--text);font-family:var(--mono);font-size:13px;padding:8px 11px;width:100%;min-height:40px;outline:none;transition:border-color .15s}
+    input:focus,textarea:focus,select:focus{border-color:var(--accent)}
+    textarea{min-height:130px;resize:vertical;line-height:1.5}
+    select{cursor:pointer} select option{background:#1a1a24}
 
-    /* SCORE BADGES */
-    .score-badge { display: inline-flex; align-items: center; justify-content: center; width: 50px; height: 50px; border-radius: 50%; font-size: 21px; font-weight: bold; flex-shrink: 0; }
-    .badge-green { background: rgba(34,197,94,.12); color: var(--green); border: 2px solid var(--green); }
-    .badge-amber { background: rgba(245,158,11,.12); color: var(--amber); border: 2px solid var(--amber); }
-    .badge-red   { background: rgba(239,68,68,.12);  color: var(--red);   border: 2px solid var(--red); }
+    /* BADGES */
+    .score-badge{display:inline-flex;align-items:center;justify-content:center;width:50px;height:50px;border-radius:50%;font-size:21px;font-weight:bold;flex-shrink:0}
+    .badge-green{background:rgba(34,197,94,.12);color:var(--green);border:2px solid var(--green)}
+    .badge-amber{background:rgba(245,158,11,.12);color:var(--amber);border:2px solid var(--amber)}
+    .badge-red{background:rgba(239,68,68,.12);color:var(--red);border:2px solid var(--red)}
 
     /* TAGS */
-    .tag { display: inline-block; padding: 2px 7px; border-radius: 4px; font-size: 10px; letter-spacing: .8px; text-transform: uppercase; background: var(--surface2); border: 1px solid var(--border2); color: var(--muted); }
-    .tag-flag { border-color: #5a1a1a; color: #f87171; background: #2a0f0f; }
-    .tag-plat  { border-color: var(--accent); color: var(--accent); }
+    .tag{display:inline-block;padding:2px 7px;border-radius:4px;font-size:10px;letter-spacing:.8px;text-transform:uppercase;background:var(--surface2);border:1px solid var(--border2);color:var(--muted)}
+    .tag-flag{border-color:#5a1a1a;color:#f87171;background:#2a0f0f}
+    .tag-plat{border-color:var(--accent);color:var(--accent)}
+    .tag-learn{border-color:var(--green);color:var(--green);background:rgba(34,197,94,.06)}
 
-    /* DEAL BOARD GRID */
-    .deal-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px,1fr)); gap: 14px; }
-    .deal-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); padding: 14px; display: flex; flex-direction: column; gap: 10px; }
-    .deal-card-top { display: flex; gap: 11px; }
-    .deal-card-meta { flex: 1; min-width: 0; }
-    .deal-card-verdict { font-size: 12px; color: var(--muted); font-style: italic; margin-top: 4px; line-height: 1.4; }
-    .deal-prices { display: flex; gap: 10px; font-size: 12px; flex-wrap: wrap; }
-    .deal-prices .buy { color: var(--text); }
-    .deal-prices .resale { color: var(--green); }
-    .deal-prices .margin { color: var(--amber); }
-    .deal-card-footer { border-top: 1px solid var(--border); padding-top: 10px; display: flex; gap: 6px; flex-direction: column; }
-    .deal-card-actions { display: flex; gap: 6px; align-items: center; justify-content: space-between; }
+    /* DEAL GRID */
+    .deal-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
+    .deal-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px;display:flex;flex-direction:column;gap:10px}
+    .deal-card-top{display:flex;gap:11px}
+    .deal-card-meta{flex:1;min-width:0}
+    .deal-card-verdict{font-size:12px;color:var(--muted);font-style:italic;margin-top:4px;line-height:1.4}
+    .deal-prices{display:flex;gap:10px;font-size:12px;flex-wrap:wrap}
+    .deal-prices .buy{color:var(--text)} .deal-prices .resale{color:var(--green)} .deal-prices .margin{color:var(--amber)}
+    .deal-card-footer{border-top:1px solid var(--border);padding-top:10px;display:flex;gap:6px;flex-direction:column}
+    .deal-card-actions{display:flex;gap:6px;align-items:center;justify-content:space-between}
+    .sell-price-row{display:flex;gap:6px;align-items:center;background:rgba(34,197,94,.05);border:1px solid rgba(34,197,94,.2);border-radius:var(--r);padding:6px 8px;font-size:11px}
+    .sell-price-row label{color:var(--green);white-space:nowrap}
+    .sell-price-row input{min-height:28px;font-size:11px;background:transparent;border:none;border-bottom:1px solid rgba(34,197,94,.3);border-radius:0;padding:2px 4px;color:var(--green)}
+    .sell-price-row input:focus{border-color:var(--green)}
 
     /* FILTER BAR */
-    .filter-bar { display: flex; gap: 12px; flex-wrap: wrap; background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); padding: 12px; margin-bottom: 16px; align-items: flex-end; }
-    .filter-bar > div { display: flex; flex-direction: column; gap: 4px; }
-    .filter-bar select { width: auto; min-width: 130px; min-height: 34px; }
-    .filter-label { font-size: 10px; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); }
-    input[type=range] { width: 90px; accent-color: var(--accent); background: none; border: none; min-height: auto; padding: 0; }
+    .filter-bar{display:flex;gap:12px;flex-wrap:wrap;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:12px;margin-bottom:16px;align-items:flex-end}
+    .filter-bar>div{display:flex;flex-direction:column;gap:4px}
+    .filter-bar select{width:auto;min-width:130px;min-height:34px}
+    .filter-label{font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--muted)}
+    input[type=range]{width:90px;accent-color:var(--accent);background:none;border:none;min-height:auto;padding:0}
 
     /* MODE TOGGLE */
-    .mode-toggle { display: flex; border: 1px solid var(--border2); border-radius: var(--r); overflow: hidden; width: fit-content; margin-bottom: 18px; }
-    .mode-toggle button { padding: 7px 20px; border: none; background: var(--surface2); color: var(--muted); font-family: var(--mono); font-size: 11px; letter-spacing: 1px; text-transform: uppercase; cursor: pointer; min-height: 36px; transition: all .15s; }
-    .mode-toggle button.active { background: var(--accent); color: #fff; }
+    .mode-toggle{display:flex;border:1px solid var(--border2);border-radius:var(--r);overflow:hidden;width:fit-content;margin-bottom:18px}
+    .mode-toggle button{padding:7px 20px;border:none;background:var(--surface2);color:var(--muted);font-family:var(--mono);font-size:11px;letter-spacing:1px;text-transform:uppercase;cursor:pointer;min-height:36px;transition:all .15s}
+    .mode-toggle button.active{background:var(--accent);color:#fff}
 
     /* ERA CHIPS */
-    .era-chips { display: flex; gap: 6px; flex-wrap: wrap; }
-    .era-chip { padding: 5px 14px; border-radius: 99px; border: 1px solid var(--border2); background: var(--surface2); color: var(--muted); cursor: pointer; font-size: 12px; font-family: var(--mono); transition: all .15s; min-height: 34px; display: flex; align-items: center; }
-    .era-chip.active { border-color: var(--accent); color: var(--accent); background: rgba(139,124,246,.1); }
+    .era-chips{display:flex;gap:6px;flex-wrap:wrap}
+    .era-chip{padding:5px 14px;border-radius:99px;border:1px solid var(--border2);background:var(--surface2);color:var(--muted);cursor:pointer;font-size:12px;font-family:var(--mono);transition:all .15s;min-height:34px;display:flex;align-items:center}
+    .era-chip.active{border-color:var(--accent);color:var(--accent);background:rgba(139,124,246,.1)}
 
     /* SPINNER */
-    .spinner { display: inline-block; width: 16px; height: 16px; border: 2px solid var(--border2); border-top-color: var(--accent); border-radius: 50%; animation: spin .65s linear infinite; vertical-align: middle; }
-    @keyframes spin { to { transform: rotate(360deg); } }
+    .spinner{display:inline-block;width:16px;height:16px;border:2px solid var(--border2);border-top-color:var(--accent);border-radius:50%;animation:spin .65s linear infinite;vertical-align:middle}
+    @keyframes spin{to{transform:rotate(360deg)}}
 
     /* SEARCH RESULTS */
-    .search-results { display: flex; flex-direction: column; gap: 10px; margin-top: 16px; }
-    .result-item { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); padding: 14px; display: flex; gap: 14px; align-items: flex-start; }
-    .result-item:hover { border-color: var(--border2); }
-    .result-num { font-size: 18px; font-weight: bold; color: var(--muted); flex-shrink: 0; width: 28px; text-align: center; margin-top: 2px; }
-    .result-body { flex: 1; min-width: 0; }
-    .result-title { font-size: 14px; color: var(--text); margin-bottom: 4px; font-weight: bold; }
-    .result-meta { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 6px; }
-    .result-take { font-size: 12px; color: var(--muted); font-style: italic; line-height: 1.4; }
-    .result-price { font-size: 15px; color: var(--green); font-weight: bold; flex-shrink: 0; white-space: nowrap; }
+    .search-results{display:flex;flex-direction:column;gap:10px;margin-top:16px}
+    .result-item{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px;display:flex;gap:14px;align-items:flex-start;transition:border-color .15s}
+    .result-item:hover{border-color:var(--border2)}
+    .result-num{font-size:18px;font-weight:bold;color:var(--muted);flex-shrink:0;width:28px;text-align:center;margin-top:2px}
+    .result-body{flex:1;min-width:0}
+    .result-title{font-size:14px;color:var(--text);margin-bottom:4px;font-weight:bold}
+    .result-meta{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:6px}
+    .result-take{font-size:12px;color:var(--muted);font-style:italic;line-height:1.4}
+    .result-price{font-size:15px;color:var(--green);font-weight:bold;flex-shrink:0;white-space:nowrap}
 
     /* PLATFORM LINKS */
-    .platform-links { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 6px; }
-    .plat-link { display: inline-flex; align-items: center; gap: 4px; padding: 5px 11px; border-radius: var(--r); border: 1px solid var(--border2); background: var(--surface2); color: var(--muted); font-family: var(--mono); font-size: 11px; text-decoration: none; transition: all .15s; }
-    .plat-link:hover { border-color: var(--accent); color: var(--accent); }
+    .platform-links{display:flex;gap:8px;flex-wrap:wrap}
+    .plat-link{display:inline-flex;align-items:center;gap:4px;padding:5px 11px;border-radius:var(--r);border:1px solid var(--border2);background:var(--surface2);color:var(--muted);font-family:var(--mono);font-size:11px;text-decoration:none;transition:all .15s}
+    .plat-link:hover{border-color:var(--accent);color:var(--accent)}
 
-    /* SCORE RESULT CARD */
-    .result-card { background: var(--surface); border: 1px solid var(--border2); border-radius: var(--r); padding: 18px; margin-top: 14px; }
+    /* SCORE CARD */
+    .result-card{background:var(--surface);border:1px solid var(--border2);border-radius:var(--r);padding:18px;margin-top:14px}
+
+    /* LEARNING BANNER */
+    .learn-banner{background:rgba(34,197,94,.05);border:1px solid rgba(34,197,94,.2);border-radius:var(--r);padding:10px 14px;font-size:11px;color:var(--green);display:flex;align-items:center;gap:8px;margin-bottom:16px}
 
     /* TOASTS */
-    #toasts { position: fixed; bottom: 20px; right: 20px; display: flex; flex-direction: column; gap: 7px; z-index: 10000; }
-    .toast { padding: 9px 15px; border-radius: var(--r); background: var(--surface); border: 1px solid var(--border2); color: var(--text); font-size: 12px; animation: toast-in .2s ease; max-width: 280px; line-height: 1.4; }
-    .toast.success { border-color: var(--green); color: var(--green); }
-    .toast.error   { border-color: var(--red);   color: var(--red); }
-    .toast.info    { border-color: var(--accent); color: var(--accent); }
-    @keyframes toast-in { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:none; } }
+    #toasts{position:fixed;bottom:20px;right:20px;display:flex;flex-direction:column;gap:7px;z-index:10000}
+    .toast{padding:9px 15px;border-radius:var(--r);background:var(--surface);border:1px solid var(--border2);color:var(--text);font-size:12px;animation:toast-in .2s ease;max-width:280px;line-height:1.4}
+    .toast.success{border-color:var(--green);color:var(--green)}
+    .toast.error{border-color:var(--red);color:var(--red)}
+    .toast.info{border-color:var(--accent);color:var(--accent)}
+    @keyframes toast-in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 
     /* MISC */
-    .row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
-    .col { display: flex; flex-direction: column; gap: 8px; }
-    .lbl { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); margin-bottom: 3px; }
-    hr { border: none; border-top: 1px solid var(--border); margin: 20px 0; }
-    .adv-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
-    .fb-card { background: var(--surface); border: 1px solid #5a1a1a; border-radius: var(--r); padding: 12px 16px; margin-top: 14px; }
-    .empty { text-align: center; padding: 56px 24px; color: var(--muted); }
-    .brand-chip { display: inline-flex; align-items: center; gap: 5px; background: var(--surface2); border: 1px solid var(--border2); border-radius: 4px; padding: 4px 9px; font-size: 12px; }
-    .brand-chip button { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 15px; line-height: 1; padding: 0; display: flex; align-items: center; }
-    .brand-chip button:hover { color: var(--red); }
-    .search-section { margin-bottom: 20px; }
-    .template-grid { display: flex; gap: 7px; flex-wrap: wrap; margin-top: 8px; }
+    .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+    .col{display:flex;flex-direction:column;gap:8px}
+    .lbl{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:3px}
+    hr{border:none;border-top:1px solid var(--border);margin:20px 0}
+    .adv-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+    .fb-card{background:var(--surface);border:1px solid #5a1a1a;border-radius:var(--r);padding:12px 16px;margin-top:8px}
+    .empty{text-align:center;padding:56px 24px;color:var(--muted)}
+    .brand-chip{display:inline-flex;align-items:center;gap:5px;background:var(--surface2);border:1px solid var(--border2);border-radius:4px;padding:4px 9px;font-size:12px}
+    .brand-chip button{background:none;border:none;color:var(--muted);cursor:pointer;font-size:15px;line-height:1;padding:0;display:flex;align-items:center}
+    .brand-chip button:hover{color:var(--red)}
+    .template-grid{display:flex;gap:7px;flex-wrap:wrap;margin-top:8px}
 
-    @media (max-width: 620px) {
-      .nav { overflow-x: auto; }
-      .nav-brand { display: none; }
-      .tab-content { padding: 16px 10px; }
-      .deal-grid { grid-template-columns: 1fr; }
-      .filter-bar { flex-direction: column; }
-      .adv-grid { grid-template-columns: 1fr; }
-      .nav-tab { padding: 13px 10px; font-size: 10px; }
-      .result-item { flex-direction: column; gap: 8px; }
+    @media(max-width:620px){
+      .nav{overflow-x:auto} .nav-brand{display:none}
+      .tab-content{padding:16px 10px}
+      .deal-grid{grid-template-columns:1fr}
+      .filter-bar{flex-direction:column}
+      .adv-grid{grid-template-columns:1fr}
+      .nav-tab{padding:13px 10px;font-size:10px}
+      .result-item{flex-direction:column;gap:8px}
     }
   </style>
 </head>
@@ -186,9 +166,12 @@
   <button class="nav-tab" data-tab="settings" onclick="switchTab('settings')">Settings</button>
 </nav>
 
-<!-- ═══════════ SEARCH ═══════════ -->
+<!-- ══════════════ SEARCH ══════════════ -->
 <div id="tab-search" class="tab-content active">
   <div class="section-title">Search Platforms</div>
+  <div id="search-learn-banner" style="display:none;" class="learn-banner">
+    ● AI is calibrated from your team's deal history
+  </div>
 
   <div class="mode-toggle">
     <button class="active" id="btn-quick" onclick="setSearchMode('quick')">Quick</button>
@@ -197,7 +180,7 @@
 
   <!-- QUICK -->
   <div id="search-quick">
-    <div class="search-section">
+    <div style="margin-bottom:20px;">
       <div class="lbl">Search query</div>
       <div class="row" style="margin-top:6px;">
         <input type="text" id="quick-query" placeholder='e.g. "Bogner ski jacket 80s"' style="flex:1;"
@@ -205,8 +188,7 @@
         <button class="btn btn-primary" id="search-btn" onclick="runAiSearch()">AI Search ↗</button>
       </div>
     </div>
-
-    <div class="search-section">
+    <div style="margin-bottom:20px;">
       <div class="lbl">Quick templates</div>
       <div class="template-grid" id="template-btns"></div>
     </div>
@@ -215,22 +197,10 @@
   <!-- ADVANCED -->
   <div id="search-advanced" style="display:none;">
     <div class="adv-grid">
-      <div class="col">
-        <div class="lbl">Brand</div>
-        <select id="adv-brand"><option value="">Any brand</option></select>
-      </div>
-      <div class="col">
-        <div class="lbl">Item type</div>
-        <input type="text" id="adv-item" placeholder="ski jacket, one-piece, fleece…">
-      </div>
-      <div class="col">
-        <div class="lbl">Color (optional)</div>
-        <input type="text" id="adv-color" placeholder="red, yellow, neon…">
-      </div>
-      <div class="col">
-        <div class="lbl">Size (optional)</div>
-        <input type="text" id="adv-size" placeholder="L, 42, XL…">
-      </div>
+      <div class="col"><div class="lbl">Brand</div><select id="adv-brand"><option value="">Any brand</option></select></div>
+      <div class="col"><div class="lbl">Item type</div><input type="text" id="adv-item" placeholder="ski jacket, one-piece, fleece…"></div>
+      <div class="col"><div class="lbl">Color (optional)</div><input type="text" id="adv-color" placeholder="red, yellow, neon…"></div>
+      <div class="col"><div class="lbl">Size (optional)</div><input type="text" id="adv-size" placeholder="L, 42, XL…"></div>
     </div>
     <div class="col" style="margin-bottom:14px;">
       <div class="lbl">Era</div>
@@ -244,7 +214,7 @@
     </div>
     <div class="col" style="margin-bottom:14px;">
       <div class="lbl">Extra keywords</div>
-      <input type="text" id="adv-keywords" placeholder="vintage, colorblock, Gore-Tex…">
+      <input type="text" id="adv-keywords" placeholder="vintage, colorblock, Gore-Tex, one-piece…">
     </div>
     <div class="row" style="margin-bottom:10px;">
       <button class="btn btn-primary" id="adv-search-btn" onclick="runAiSearch()">AI Search ↗</button>
@@ -252,22 +222,19 @@
     </div>
   </div>
 
-  <!-- Platform manual links — always visible -->
-  <div style="margin-top:4px;margin-bottom:16px;">
+  <!-- Manual platform links -->
+  <div style="margin-bottom:16px;">
     <div class="lbl" style="margin-bottom:6px;">Browse manually</div>
     <div class="platform-links" id="platform-links"></div>
-    <div style="margin-top:8px;">
-      <div class="fb-card">
-        <div class="row">
-          <span style="color:#f87171;">FB Marketplace</span>
-          <span style="flex:1;color:var(--muted);font-size:11px;">Paste query manually into Facebook</span>
-          <button class="btn btn-sm" onclick="copyQueryToClipboard()">Copy query</button>
-        </div>
+    <div class="fb-card">
+      <div class="row">
+        <span style="color:#f87171;">FB Marketplace</span>
+        <span style="flex:1;color:var(--muted);font-size:11px;">Search manually — paste query into Facebook</span>
+        <button class="btn btn-sm" onclick="copyQueryToClipboard()">Copy query</button>
       </div>
     </div>
   </div>
 
-  <!-- AI search status + results -->
   <div id="search-status" style="display:none;" class="row" style="margin-bottom:12px;">
     <span class="spinner"></span>
     <span style="color:var(--muted);font-size:12px;" id="search-status-text">Searching…</span>
@@ -275,22 +242,24 @@
   <div id="search-results"></div>
 </div>
 
-<!-- ═══════════ SCORE ═══════════ -->
+<!-- ══════════════ SCORE ══════════════ -->
 <div id="tab-score" class="tab-content">
   <div class="section-title">Score a Listing</div>
+  <div id="score-learn-banner" style="display:none;" class="learn-banner">
+    ● Scoring calibrated from your team's deal history
+  </div>
   <div class="card col">
-    <div class="row" style="gap:14px;flex-wrap:wrap;">
-      <div class="col" style="flex:0 0 auto;">
-        <div class="lbl">Platform</div>
-        <select id="score-platform" style="width:160px;">
-          <option>Tradera</option><option>Vinted</option><option>Sellpy</option>
-          <option>eBay</option><option>Facebook</option><option>Other</option>
-        </select>
-      </div>
+    <div class="col" style="flex:0 0 auto;max-width:180px;">
+      <div class="lbl">Platform source</div>
+      <select id="score-platform">
+        <option>Tradera</option><option>Vinted</option><option>Sellpy</option>
+        <option>eBay</option><option>Facebook</option><option>Blocket</option>
+        <option>Tise</option><option>Depop</option><option>Other</option>
+      </select>
     </div>
     <div class="col">
-      <div class="lbl">Paste listing — title, price, description, URL — any language, any format</div>
-      <textarea id="listing-text" placeholder="Paste the full listing here. Swedish, Polish, English — all fine."></textarea>
+      <div class="lbl">Paste listing — any language, any format, any currency</div>
+      <textarea id="listing-text" placeholder="Paste everything: title, price, description, URL. Swedish, Polish, German, French, Finnish — all handled."></textarea>
     </div>
     <div>
       <button class="btn btn-primary" id="score-btn" onclick="scoreListing()">Score with AI</button>
@@ -299,44 +268,36 @@
   <div id="score-result"></div>
 </div>
 
-<!-- ═══════════ DEAL BOARD ═══════════ -->
+<!-- ══════════════ DEAL BOARD ══════════════ -->
 <div id="tab-board" class="tab-content">
   <div class="row" style="justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px;">
     <div class="section-title" style="margin:0;">Deal Board</div>
     <div class="row" style="gap:7px;">
       <button class="btn btn-sm" onclick="exportDeals()">Export JSON</button>
       <label class="btn btn-sm" style="cursor:pointer;">
-        Import JSON
-        <input type="file" accept=".json" onchange="importDeals(this)" style="display:none;">
+        Import JSON<input type="file" accept=".json" onchange="importDeals(this)" style="display:none;">
       </label>
     </div>
   </div>
   <div class="filter-bar">
-    <div>
-      <div class="filter-label">Status</div>
+    <div><div class="filter-label">Status</div>
       <select id="filter-status" onchange="renderBoard()">
-        <option value="">All</option><option>Available</option><option>Claimed</option>
-        <option>Bought</option><option>Pass</option>
+        <option value="">All</option><option>Available</option><option>Claimed</option><option>Bought</option><option>Pass</option>
       </select>
     </div>
-    <div>
-      <div class="filter-label">Platform</div>
+    <div><div class="filter-label">Platform</div>
       <select id="filter-platform" onchange="renderBoard()">
-        <option value="">All</option><option>Tradera</option><option>Vinted</option>
-        <option>Sellpy</option><option>eBay</option><option>Facebook</option><option>Other</option>
+        <option value="">All</option><option>Tradera</option><option>Vinted</option><option>Sellpy</option>
+        <option>eBay</option><option>Facebook</option><option>Blocket</option><option>Tise</option><option>Depop</option><option>Other</option>
       </select>
     </div>
-    <div>
-      <div class="filter-label">Min score: <span id="score-val">1</span></div>
+    <div><div class="filter-label">Min score: <span id="score-val">1</span></div>
       <input type="range" id="filter-score" min="1" max="10" value="1"
         oninput="document.getElementById('score-val').textContent=this.value;renderBoard()">
     </div>
-    <div>
-      <div class="filter-label">Sort</div>
+    <div><div class="filter-label">Sort</div>
       <select id="sort-by" onchange="renderBoard()">
-        <option value="score">Score ↓</option>
-        <option value="price">Price ↑</option>
-        <option value="date">Newest</option>
+        <option value="score">Score ↓</option><option value="price">Price ↑</option><option value="date">Newest</option>
       </select>
     </div>
   </div>
@@ -347,7 +308,7 @@
   </div>
 </div>
 
-<!-- ═══════════ SETTINGS ═══════════ -->
+<!-- ══════════════ SETTINGS ══════════════ -->
 <div id="tab-settings" class="tab-content">
   <div class="section-title">Settings</div>
   <div class="card col" style="gap:16px;margin-bottom:14px;">
@@ -376,6 +337,14 @@
       <button class="btn btn-sm btn-primary" onclick="addBrand()">Add</button>
     </div>
   </div>
+  <div class="card" style="margin-bottom:14px;border-color:rgba(34,197,94,.25);">
+    <div class="lbl" style="color:var(--green);margin-bottom:10px;">AI Memory <span id="memory-count"></span></div>
+    <p style="color:var(--muted);font-size:11px;line-height:1.6;margin-bottom:10px;">
+      When you mark deals "Bought" and enter the actual sell price, the AI learns from those outcomes.
+      It also learns from deals you mark "Pass". Future scoring and searches calibrate to what works for your team.
+    </p>
+    <button class="btn btn-sm btn-danger" onclick="clearMemory()">Clear AI memory</button>
+  </div>
   <div class="card" style="border-color:#5a1a1a;">
     <div class="lbl" style="color:#f87171;margin-bottom:10px;">Danger Zone</div>
     <button class="btn btn-danger" onclick="clearAllDeals()">Clear all deals</button>
@@ -387,13 +356,15 @@
 <script>
 'use strict';
 
-// ═══════════════════════════════════
+// ═══════════════════════════════════════════════
 //  CONSTANTS
-// ═══════════════════════════════════
+// ═══════════════════════════════════════════════
 const DEFAULT_BRANDS = [
   'Helly Hansen','Burton','Volcom','Bogner','Ellesse','Killy',
   'Nevica',"O'Neill",'Kjus','Phenix','Alpina','Descente',
-  'Peak Performance','Norrøna','Halti','Spyder','Rossignol','Head'
+  'Peak Performance','Norrøna','Halti','Spyder','Rossignol',
+  'Head','Fila','Sergio Tacchini','Colmar','Schöffel','Marker',
+  'Atomic','Dynastar','Völkl','Obermeyer','Sportful'
 ];
 
 const TEMPLATES = [
@@ -404,106 +375,132 @@ const TEMPLATES = [
   'Ellesse ski 80s',
   'Killy vintage',
   'Peak Performance ski jacket',
-  'Descente ski suit 90s'
+  'Descente ski suit 90s',
+  'Fila ski vintage',
+  'Colmar ski jacket'
 ];
 
 const PLATFORMS = [
-  { name: 'Tradera', url: q => `https://www.tradera.com/search?q=${encodeURIComponent(q)}` },
-  { name: 'Vinted',  url: q => `https://www.vinted.se/catalog?search_text=${encodeURIComponent(q)}` },
-  { name: 'Sellpy',  url: q => `https://www.sellpy.se/search?query=${encodeURIComponent(q)}` },
-  { name: 'eBay',    url: q => `https://www.ebay.com/sch/i.html?_nkw=${encodeURIComponent(q)}&LH_PrefLoc=3` }
+  { name:'Tradera', url: q=>`https://www.tradera.com/search?q=${encodeURIComponent(q)}` },
+  { name:'Vinted',  url: q=>`https://www.vinted.se/catalog?search_text=${encodeURIComponent(q)}` },
+  { name:'Sellpy',  url: q=>`https://www.sellpy.se/search?query=${encodeURIComponent(q)}` },
+  { name:'eBay',    url: q=>`https://www.ebay.com/sch/i.html?_nkw=${encodeURIComponent(q)}&LH_PrefLoc=3` },
+  { name:'Blocket', url: q=>`https://www.blocket.se/annonser/hela_sverige?q=${encodeURIComponent(q)}&cg=6020` },
+  { name:'Tise',    url: q=>`https://tise.com/search?query=${encodeURIComponent(q)}` }
 ];
 
 const COLOR_MAP_SV = {
-  red:'röd', blue:'blå', green:'grön', yellow:'gul', white:'vit',
-  black:'svart', orange:'orange', purple:'lila', pink:'rosa',
-  grey:'grå', gray:'grå', brown:'brun', beige:'beige'
+  red:'röd',blue:'blå',green:'grön',yellow:'gul',white:'vit',
+  black:'svart',orange:'orange',purple:'lila',pink:'rosa',
+  grey:'grå',gray:'grå',brown:'brun',beige:'beige'
 };
-const ERA_MAP_EN = { '70s':'1970s', '80s':'1980s', '90s':'1990s', '00s':'2000s' };
-const ERA_MAP_SV = { '70s':'70-tal', '80s':'80-tal', '90s':'90-tal', '00s':'2000-tal' };
+const ERA_MAP_EN = {'70s':'1970s','80s':'1980s','90s':'1990s','00s':'2000s'};
+const ERA_MAP_SV = {'70s':'70-tal','80s':'80-tal','90s':'90-tal','00s':'2000-tal'};
 
-// ───── AI SEARCH PROMPT ─────
-const SEARCH_SYSTEM = `You are a vintage ski and snowboard clothing sourcing agent for a Swedish resale business.
+// ─── COMPREHENSIVE MULTILINGUAL SCORING PROMPT ───
+const SCORE_BASE = `You are an expert in vintage ski and snowboard clothing resale for a Swedish resale business sourcing from across Europe.
 
-Your job: search for listings matching the user's query on Tradera (tradera.com), Vinted Sweden (vinted.se), Sellpy (sellpy.se), and eBay (ebay.com, European sellers).
+═══ MULTILINGUAL CONDITION TERMS ═══
+Parse condition from ANY language accurately:
 
-Target brands (highest value): Bogner, Kjus, Phenix, Killy, Descente, Alpina
-High value brands: Helly Hansen, Burton, Nevica, Ellesse, Peak Performance, Norrøna, Halti, Spyder, O'Neill, Volcom
+POLISH: nowy/nowa/stan nowy/jak nowy = mint | bardzo dobry stan/bardzo dobry = good | dobry stan/dobry = fair | akceptowalny/używany = poor
+SWEDISH: nyskick/ny/oanvänd/orörd = mint | mycket gott skick/fint skick/nästan nytt = good | gott skick/bra skick/använt = fair | slitet/skadat/hårt använt = poor
+NORWEGIAN: ny/som ny/ubrukt = mint | meget god stand/svært god = good | god stand/bra stand = fair | slitt/skadet = poor
+FINNISH: uusi/uudenveroisena/käyttämätön = mint | erittäin hyvä/hyvin säilynyt = good | hyvä/käytetty = fair | kulunut/vaurioitunut = poor
+GERMAN: neu/neuwertig/wie neu = mint | sehr gut/sehr guter Zustand = good | gut/guter Zustand = fair | akzeptabel/getragen/beschädigt = poor
+FRENCH: neuf/comme neuf/état neuf = mint | très bon état/excellent état = good | bon état = fair | état correct/usé/abîmé = poor
+ITALIAN: nuovo/come nuovo/ottime condizioni = mint | ottimo stato/ottimo = good | buono/buone condizioni = fair | accettabile/usato/rovinato = poor
+DUTCH: nieuw/als nieuw/ongedragen = mint | zeer goed/uitstekend = good | goed/gebruikt = fair | acceptabel/gedragen/beschadigd = poor
+DANISH: ny/som ny/ubrugt = mint | meget god stand = good | god stand = fair | slidt/beskadiget = poor
+SPANISH: nuevo/como nuevo = mint | muy buen estado/excelente = good | buen estado = fair | aceptable/usado/deteriorado = poor
 
-Search each platform. Look for vintage pieces, especially 70s-90s era. Prioritise underpriced items (good pieces under 300 SEK are excellent deals).
+═══ PRICE PARSING ═══
+Extract numeric SEK value from ANY format:
+SEK formats: "299 kr", "299:-", "299 SEK", "299,00 kr", "299.00 SEK" → 299
+EUR → multiply by 11.5  (e.g. "25€" or "25,00 EUR" → 288 SEK)
+PLN → multiply by 2.6   (e.g. "89 zł" or "89 PLN" → 231 SEK)
+NOK → multiply by 0.97  (e.g. "199 NOK" → 193 SEK)
+DKK → multiply by 1.55  (e.g. "199 DKK" → 308 SEK)
+GBP → multiply by 13.5  (e.g. "£15" → 203 SEK)
+USD → multiply by 10.5
+Always store buy_price_sek in SEK after conversion.
 
-Return ONLY a JSON array — no other text, no markdown fences. Each object:
+═══ BRAND TIERS ═══
+HIGHEST (premium vintage, max resale): Bogner, Kjus, Phenix, Killy, Descente (pre-2000), Alpina (pre-2000)
+HIGH (strong resale): Helly Hansen, Burton, Nevica, Ellesse, Peak Performance, Norrøna, Halti, Spyder, O'Neill, Volcom, Rossignol (vintage), Head (vintage), Fila (vintage ski), Sergio Tacchini (vintage ski), Colmar, Schöffel, Obermeyer, Marker (vintage), Dynastar (vintage), Sportful, Atomic (vintage apparel), Volkl (vintage apparel), Salomon (vintage apparel)
+MEDIUM: Other named ski/outdoor brands, Columbia, Patagonia ski pieces
+LOW: Unbranded, H&M, Zara, Primark, unknown fast fashion
+
+═══ ERA DETECTION ═══
+80s cues: neon, bold colorblock, one-piece, bib pants, puffy quilted, "retro" in listing, Bogner 80s cuts, stirrup pants, high-waist, pastel geometric patterns, "Made in West Germany/Italy/France/Yugoslavia"
+90s cues: loud all-over prints, baggy, technical fabric names (Gore-Tex, Thinsulate, Sympatex), early Helly Hansen logos, Burton pre-2000 graphics, "Made in EU" older labels, Nevica peak years
+00s cues: slimmer fit returning, subdued colors, Half-Shell style, modern technical fabrics
+If listing is sparse (Vinted Polish seller, minimal description): infer era from brand model, style description, and photo cues if mentioned.
+
+═══ PLATFORM SELLER PATTERNS ═══
+Vinted.se: Many Polish sellers shipping from Poland. Listings often in Polish. Prices in SEK but item ships internationally. Condition scale sometimes 1-5 stars. Factor in ~40-80 SEK shipping from Poland.
+Tradera: Swedish eBay equivalent. Auctions and fixed price. Sellers mostly Swedish/Scandinavian. Some Finnish and Norwegian sellers.
+Sellpy: Swedish professional reseller. Consistent condition standards. Slightly higher prices but reliable.
+eBay (LH_PrefLoc=3 = European sellers): German, French, Italian, UK, Dutch sellers common. Prices in EUR/GBP. Factor in international shipping to Sweden.
+Blocket: Swedish classifieds. No shipping usually — local pickup. Prices may be negotiable.
+Tise: Scandinavian resale app. Norwegian and Swedish sellers primarily.
+
+═══ SCORING CALIBRATION ═══
+NEW/MINT condition + HIGH brand + price < 300 SEK → minimum score 7
+NEW/MINT condition + HIGHEST brand + any price → minimum score 8
+GOOD condition + HIGH brand + clear 80s/90s era + price < 500 SEK → score 7-8
+GOOD condition + HIGHEST brand + any era + price < 1000 SEK → score 8-9
+Unknown era but clearly vintage aesthetic + HIGH brand → score 6+ (do not penalise heavily for missing era info)
+Score BELOW 4 only if: low-tier brand AND poor condition AND overpriced
+
+═══ RESALE ESTIMATES (Swedish/European vintage market 2024-2025) ═══
+Bogner/Kjus ski jacket: 1500-5000 SEK
+Ellesse/Killy/Descente one-piece: 1000-3500 SEK
+Helly Hansen/Nevica jacket: 600-1800 SEK
+Peak Performance jacket: 450-1000 SEK
+Fila/Sergio Tacchini vintage ski: 800-2500 SEK
+Colmar/Schöffel vintage: 700-2000 SEK
+Generic branded ski pants (good condition): 300-700 SEK
+Burton snowboard jacket (pre-2005): 400-1200 SEK`;
+
+// Search system prompt
+const SEARCH_BASE = `You are a vintage ski and snowboard clothing sourcing agent for a Swedish resale business.
+
+Search for listings on: Tradera (tradera.com), Vinted Sweden (vinted.se), Sellpy (sellpy.se), eBay (ebay.com, European sellers), Blocket (blocket.se), Tise (tise.com).
+
+TARGET: Vintage/retro pieces from 70s-90s primarily. Target brands: Bogner, Kjus, Phenix, Killy, Helly Hansen, Burton, Nevica, Ellesse, Peak Performance, Norrøna, Descente, Fila (vintage ski), Sergio Tacchini (vintage ski), Colmar, Halti, Spyder, O'Neill, Volcom, Alpina.
+
+Understand that sellers on these platforms come from all over Europe — Polish, German, French, Finnish, Norwegian, Swedish — and listings reflect their local languages and conventions.
+
+Prioritise: underpriced items (great pieces under 300 SEK are excellent), rare/collectible pieces regardless of price, items with strong resale potential in the Swedish/European vintage market.
+
+Return ONLY a JSON array — no markdown, no extra text. Each object:
 {
   "title": "listing title",
   "brand": "brand or unknown",
-  "price_sek": number or null,
-  "price_raw": "original price string",
-  "condition": "brief condition",
-  "platform": "Tradera|Vinted|Sellpy|eBay",
-  "url": "direct URL to listing or search results page",
+  "price_sek": number (converted to SEK) or null,
+  "price_raw": "original price as shown",
+  "condition": "mint|good|fair|poor|unknown",
+  "platform": "Tradera|Vinted|Sellpy|eBay|Blocket|Tise|Other",
+  "url": "direct listing URL or search results URL",
   "era": "70s|80s|90s|00s|2010s|unknown",
-  "quick_take": "max 12 words: why buy or pass"
+  "quick_take": "max 12 words: why this is or isn't worth pursuing"
 }
 
-Return 6-12 results. If a platform has no results, skip it. Always include the URL even if it is a search page.`;
+Return 6-12 results across multiple platforms. Always include the URL.`;
 
-// ───── SCORING PROMPT ─────
-const SCORE_SYSTEM = `You are an expert in vintage ski and snowboard clothing resale for a Swedish resale business.
-
-MULTILINGUAL: Listings appear in Swedish, Polish, Finnish, Norwegian, Danish, or English. Interpret all correctly.
-
-CONDITION TERMS BY LANGUAGE:
-- Polish: "nowy/stan nowy/nowa" = mint, "bardzo dobry" = good, "dobry stan" = good, "dobry" = fair, "akceptowalny" = poor
-- Swedish: "nyskick/ny/oanvänd" = mint, "mycket gott skick/fint skick" = good, "gott skick/bra skick" = good, "använt" = fair, "slitet" = poor
-- Norwegian: "ny/som ny" = mint, "meget god" = good, "god" = fair
-- English: standard condition terms apply
-
-PRICE FORMATS (all mean Swedish kronor):
-"229 kr", "229 SEK", "229:-", "229,00 kr", "229.00 SEK" — extract numeric value only.
-If price is in EUR, multiply by 11. If in PLN, multiply by 0.27.
-
-BRAND TIERS:
-- HIGHEST: Bogner, Kjus, Phenix, Killy, Descente (vintage), Alpina (vintage)
-- HIGH: Helly Hansen, Burton, Nevica, Ellesse, Peak Performance, Norrøna, Halti, Spyder, O'Neill, Volcom, Rossignol (vintage), Head (vintage), Fila (vintage ski), Sergio Tacchini (vintage ski)
-- MEDIUM: other named ski/outdoor brands
-- LOW: unbranded, H&M, Zara, fast fashion
-
-ERA DETECTION — look for decade cues in title, description, style, model name:
-- 80s cues: neon, colorblock, one-piece, "retro", high-waist, Bogner 80s cuts
-- 90s cues: loud prints, baggy, technical fabric names (Gore-Tex first gen), "vintage"
-- If listing is in Polish from vinted.se — the era info may be minimal, use style/brand cues
-
-SCORING GUIDE (be accurate but not stingy):
-- NEW condition + HIGH brand + under 300 SEK = score 7-8 minimum
-- NEW condition + HIGHEST brand + any price = score 8-9
-- MINT/GOOD + HIGH brand + clear 80s/90s era + under 400 SEK = score 7-8
-- Unknown era but clearly vintage aesthetic + HIGH brand = still score 6+
-- Only score below 4 if: low-tier brand, poor condition, AND overpriced
-
-RESALE ESTIMATES (Swedish/European vintage market 2024-2025):
-- Bogner/Kjus ski jacket: 1500-4000 SEK
-- Helly Hansen/Nevica jacket: 600-1500 SEK
-- Peak Performance piece: 400-900 SEK
-- Ellesse/Killy/Descente vintage piece: 800-2500 SEK
-- Generic ski pants (good brand): 300-600 SEK
-
-Return ONLY a JSON object — no markdown, no explanation:
-{
-  "score": 1-10,
-  "brand_tier": "high|medium|low",
-  "era": "70s|80s|90s|00s|2010s|unknown",
-  "condition": "mint|good|fair|poor|unknown",
-  "buy_price_sek": number or null,
-  "estimated_resale_sek": number or null,
-  "margin_estimate": "e.g. 3-4x or unknown",
-  "verdict": "one sharp sentence max 20 words on whether to buy",
-  "flags": ["array of red flag strings — empty array if none"]
-}`;
-
-// ═══════════════════════════════════
+// ═══════════════════════════════════════════════
 //  STATE
-// ═══════════════════════════════════
-let S = { deals: [], brands: [...DEFAULT_BRANDS], apiKey: '', teamName: '', activeTab: 'search' };
+// ═══════════════════════════════════════════════
+let S = {
+  deals:   [],
+  brands:  [...DEFAULT_BRANDS],
+  apiKey:  '',
+  teamName:'',
+  activeTab:'search',
+  // AI memory: outcomes the model learns from
+  memory: []  // {type:'bought'|'passed', brand_tier, era, condition, platform, buy_price_sek, sell_price_sek, score, verdict, note, ts}
+};
 
 function loadState() {
   try {
@@ -511,10 +508,12 @@ function loadState() {
     const b = localStorage.getItem('ski_brands');
     const k = localStorage.getItem('ski_apikey');
     const n = localStorage.getItem('ski_teamname');
-    if (d) S.deals   = JSON.parse(d);
-    if (b) S.brands  = JSON.parse(b);
-    if (k) S.apiKey  = k;
+    const m = localStorage.getItem('ski_memory');
+    if (d) S.deals    = JSON.parse(d);
+    if (b) S.brands   = JSON.parse(b);
+    if (k) S.apiKey   = k;
     if (n) S.teamName = n;
+    if (m) S.memory   = JSON.parse(m);
   } catch(e) { console.error(e); }
 }
 
@@ -524,12 +523,67 @@ function save() {
     localStorage.setItem('ski_brands',   JSON.stringify(S.brands));
     localStorage.setItem('ski_apikey',   S.apiKey);
     localStorage.setItem('ski_teamname', S.teamName);
+    localStorage.setItem('ski_memory',   JSON.stringify(S.memory));
   } catch(e) { console.error(e); }
 }
 
-// ═══════════════════════════════════
+// ─── Build learned context to inject into prompts ───
+function buildLearnedContext() {
+  if (!S.memory.length) return '';
+
+  const bought = S.memory.filter(m => m.type === 'bought' && m.sell_price_sek);
+  const passed = S.memory.filter(m => m.type === 'passed');
+
+  let ctx = '\n\n═══ LEARNED FROM THIS TEAM\'S ACTUAL DEAL HISTORY ═══\n';
+  ctx += 'Use these real outcomes to calibrate your judgement for this specific team:\n\n';
+
+  if (bought.length) {
+    ctx += 'SUCCESSFUL BUYS (items bought and sold profitably):\n';
+    bought.slice(-12).forEach(m => {
+      const multiplier = m.buy_price_sek > 0 ? (m.sell_price_sek / m.buy_price_sek).toFixed(1) : '?';
+      ctx += `• ${m.brand_tier || '?'} tier | ${m.era || '?'} | ${m.condition || '?'} condition | ${m.platform || '?'} | bought ${m.buy_price_sek || '?'} SEK → sold ${m.sell_price_sek} SEK (${multiplier}x)\n`;
+      if (m.note) ctx += `  Note: ${m.note}\n`;
+    });
+    ctx += '\n';
+  }
+
+  if (passed.length) {
+    ctx += 'ITEMS WE PASSED ON:\n';
+    passed.slice(-8).forEach(m => {
+      ctx += `• Score was ${m.score || '?'} | ${m.brand_tier || '?'} tier | ${m.era || '?'} | ${m.condition || '?'} | ${m.buy_price_sek || '?'} SEK on ${m.platform || '?'}`;
+      if (m.note) ctx += ` — reason: ${m.note}`;
+      ctx += '\n';
+    });
+    ctx += '\n';
+  }
+
+  ctx += 'Adjust your scoring and search priorities to match these patterns.\n';
+  return ctx;
+}
+
+function addMemory(entry) {
+  S.memory.push({ ...entry, ts: new Date().toISOString() });
+  // Keep last 50 entries
+  if (S.memory.length > 50) S.memory = S.memory.slice(-50);
+  save();
+}
+
+function clearMemory() {
+  if (!confirm('Clear all AI memory? The AI will lose its learned calibration.')) return;
+  S.memory = [];
+  save();
+  updateMemoryCount();
+  toast('AI memory cleared', 'info');
+}
+
+function updateMemoryCount() {
+  const el = document.getElementById('memory-count');
+  if (el) el.textContent = S.memory.length ? `(${S.memory.length} outcomes learned)` : '(no history yet)';
+}
+
+// ═══════════════════════════════════════════════
 //  NAV
-// ═══════════════════════════════════
+// ═══════════════════════════════════════════════
 function switchTab(name) {
   document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
   document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
@@ -541,59 +595,51 @@ function switchTab(name) {
   if (name === 'search')   renderSearchUI();
 }
 
-// ═══════════════════════════════════
+// ═══════════════════════════════════════════════
 //  UTILS
-// ═══════════════════════════════════
+// ═══════════════════════════════════════════════
 function uid()  { return crypto.randomUUID(); }
-function esc(s) { return String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
-
+function esc(s) { return String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 function relTime(iso) {
-  const d = Date.now() - new Date(iso).getTime();
-  const m = Math.floor(d/60000), h = Math.floor(d/3600000), dy = Math.floor(d/86400000);
-  if (m < 1) return 'just now';
-  if (m < 60) return `${m}m ago`;
-  if (h < 24) return `${h}h ago`;
-  return `${dy}d ago`;
+  const d = Date.now()-new Date(iso).getTime();
+  const m=Math.floor(d/60000),h=Math.floor(d/3600000),dy=Math.floor(d/86400000);
+  if(m<1)return'just now';if(m<60)return`${m}m ago`;if(h<24)return`${h}h ago`;return`${dy}d ago`;
 }
-
-function toast(msg, type = 'info') {
+function toast(msg, type='info') {
   const el = document.createElement('div');
-  el.className = `toast ${type}`;
-  el.textContent = msg;
+  el.className=`toast ${type}`; el.textContent=msg;
   document.getElementById('toasts').appendChild(el);
-  setTimeout(() => { el.style.opacity='0'; el.style.transition='opacity .3s'; setTimeout(()=>el.remove(),300); }, 2700);
+  setTimeout(()=>{el.style.opacity='0';el.style.transition='opacity .3s';setTimeout(()=>el.remove(),300);},2700);
 }
+function badgeClass(n) { return n>=8?'badge-green':n>=5?'badge-amber':'badge-red'; }
+function extractUrl(text) { const m=text.match(/https?:\/\/[^\s"'<>]+/); return m?m[0]:''; }
 
-function badgeClass(n) { return n >= 8 ? 'badge-green' : n >= 5 ? 'badge-amber' : 'badge-red'; }
-function extractUrl(text) { const m = text.match(/https?:\/\/[^\s"'<>]+/); return m ? m[0] : ''; }
-
-// ═══════════════════════════════════
-//  SEARCH MODE / QUERY BUILDING
-// ═══════════════════════════════════
+// ═══════════════════════════════════════════════
+//  SEARCH MODE / QUERY
+// ═══════════════════════════════════════════════
 let searchMode = 'quick';
 let selectedEras = new Set(['any']);
 
 function setSearchMode(mode) {
   searchMode = mode;
-  document.getElementById('search-quick').style.display    = mode === 'quick' ? '' : 'none';
-  document.getElementById('search-advanced').style.display = mode === 'advanced' ? '' : 'none';
-  document.getElementById('btn-quick').classList.toggle('active', mode === 'quick');
-  document.getElementById('btn-advanced').classList.toggle('active', mode === 'advanced');
+  document.getElementById('search-quick').style.display    = mode==='quick'?'':'none';
+  document.getElementById('search-advanced').style.display = mode==='advanced'?'':'none';
+  document.getElementById('btn-quick').classList.toggle('active', mode==='quick');
+  document.getElementById('btn-advanced').classList.toggle('active', mode==='advanced');
 }
 
 function toggleEra(el) {
   const era = el.dataset.era;
-  if (era === 'any') {
-    selectedEras = new Set(['any']);
-    document.querySelectorAll('.era-chip').forEach(c => c.classList.remove('active'));
-    el.classList.add('active');
-    return;
+  if (era==='any') {
+    selectedEras=new Set(['any']);
+    document.querySelectorAll('.era-chip').forEach(c=>c.classList.remove('active'));
+    el.classList.add('active'); return;
   }
   selectedEras.delete('any');
   document.querySelector('[data-era="any"]').classList.remove('active');
-  if (selectedEras.has(era)) { selectedEras.delete(era); el.classList.remove('active'); }
-  else                        { selectedEras.add(era);    el.classList.add('active'); }
-  if (selectedEras.size === 0) { selectedEras.add('any'); document.querySelector('[data-era="any"]').classList.add('active'); }
+  if (selectedEras.has(era)){selectedEras.delete(era);el.classList.remove('active');}
+  else{selectedEras.add(era);el.classList.add('active');}
+  if(!selectedEras.size){selectedEras.add('any');document.querySelector('[data-era="any"]').classList.add('active');}
 }
 
 function getAdvFields() {
@@ -608,257 +654,252 @@ function getAdvFields() {
 }
 
 function buildGenericQuery(f) {
-  const parts = [];
-  if (f.brand)    parts.push(f.brand);
-  if (f.item)     parts.push(f.item);
-  if (!f.eras.includes('any') && f.eras.length) parts.push(f.eras.map(e => ERA_MAP_EN[e]||e).join(' '));
-  if (f.color)    parts.push(f.color);
-  if (f.size)     parts.push(f.size);
-  if (f.keywords) parts.push(f.keywords);
+  const parts=[];
+  if(f.brand)    parts.push(f.brand);
+  if(f.item)     parts.push(f.item);
+  if(!f.eras.includes('any')&&f.eras.length) parts.push(f.eras.map(e=>ERA_MAP_EN[e]||e).join(' '));
+  if(f.color)    parts.push(f.color);
+  if(f.size)     parts.push(f.size);
+  if(f.keywords) parts.push(f.keywords);
   return parts.filter(Boolean).join(' ');
 }
 
 function buildTraderaQuery(f) {
-  const parts = [];
-  if (f.brand)    parts.push(f.brand);
-  if (f.item)     parts.push(f.item);
-  if (!f.eras.includes('any') && f.eras.length) parts.push(f.eras.map(e => ERA_MAP_SV[e]||e).join(' '));
-  if (f.color)    { const sv = COLOR_MAP_SV[f.color.toLowerCase()]; parts.push(sv||f.color); }
-  if (f.size)     parts.push(f.size);
-  if (f.keywords) parts.push(f.keywords);
+  const parts=[];
+  if(f.brand)    parts.push(f.brand);
+  if(f.item)     parts.push(f.item);
+  if(!f.eras.includes('any')&&f.eras.length) parts.push(f.eras.map(e=>ERA_MAP_SV[e]||e).join(' '));
+  if(f.color)    {const sv=COLOR_MAP_SV[f.color.toLowerCase()];parts.push(sv||f.color);}
+  if(f.size)     parts.push(f.size);
+  if(f.keywords) parts.push(f.keywords);
   return parts.filter(Boolean).join(' ');
 }
 
 function getQuery() {
-  if (searchMode === 'quick') return document.getElementById('quick-query').value.trim();
+  if(searchMode==='quick') return document.getElementById('quick-query').value.trim();
   return buildGenericQuery(getAdvFields());
 }
 
 function getPlatformQuery(platformName) {
-  if (searchMode === 'advanced') {
-    const f = getAdvFields();
-    return platformName === 'Tradera' ? buildTraderaQuery(f) : buildGenericQuery(f);
+  if(searchMode==='advanced'){
+    const f=getAdvFields();
+    return platformName==='Tradera'?buildTraderaQuery(f):buildGenericQuery(f);
   }
   return document.getElementById('quick-query').value.trim();
 }
 
 function previewQuery() {
-  const f = getAdvFields();
-  const g = buildGenericQuery(f);
-  const t = buildTraderaQuery(f);
-  if (!g) { toast('Fill in at least one field', 'error'); return; }
+  const f=getAdvFields(); const g=buildGenericQuery(f); const t=buildTraderaQuery(f);
+  if(!g){toast('Fill in at least one field','error');return;}
   toast(`Query: "${g}"`, 'info');
-  if (t !== g) setTimeout(() => toast(`Tradera (SE): "${t}"`, 'info'), 400);
+  if(t!==g) setTimeout(()=>toast(`Tradera (SE): "${t}"`, 'info'),400);
 }
 
 function copyQueryToClipboard() {
-  const q = getQuery();
-  if (!q) { toast('Enter a search query first', 'error'); return; }
-  navigator.clipboard.writeText(q)
-    .then(() => toast('Copied to clipboard ✓', 'success'))
-    .catch(() => toast('Copy failed', 'error'));
+  const q=getQuery();
+  if(!q){toast('Enter a query first','error');return;}
+  navigator.clipboard.writeText(q).then(()=>toast('Copied ✓','success')).catch(()=>toast('Copy failed','error'));
 }
 
 function launchTemplate(query) {
-  if (searchMode === 'advanced') setSearchMode('quick');
+  if(searchMode==='advanced') setSearchMode('quick');
   document.getElementById('quick-query').value = query;
   runAiSearch();
 }
 
 function renderSearchUI() {
-  // template buttons
+  // Templates
   document.getElementById('template-btns').innerHTML = TEMPLATES
-    .map(t => `<button class="btn" onclick="launchTemplate(${JSON.stringify(t)})">${t}</button>`)
+    .map(t=>`<button class="btn" onclick="launchTemplate(${JSON.stringify(t)})">${t}</button>`)
     .join('');
 
-  // platform manual links
-  const q = getQuery();
+  // Platform manual links
+  const q = getQuery() || 'vintage ski';
   document.getElementById('platform-links').innerHTML = PLATFORMS
-    .map(p => {
-      const pq = searchMode === 'advanced' && p.name === 'Tradera' ? buildTraderaQuery(getAdvFields()) : (q || 'vintage ski');
+    .map(p=>{
+      const pq = searchMode==='advanced'&&p.name==='Tradera' ? buildTraderaQuery(getAdvFields()) : q;
       return `<a href="${esc(p.url(pq))}" target="_blank" rel="noopener" class="plat-link">${p.name} ↗</a>`;
     }).join('');
 
-  // brand dropdown
+  // Brand dropdown
   const sel = document.getElementById('adv-brand');
-  sel.innerHTML = '<option value="">Any brand</option>' + S.brands.map(b => `<option>${esc(b)}</option>`).join('');
+  sel.innerHTML = '<option value="">Any brand</option>' + S.brands.map(b=>`<option>${esc(b)}</option>`).join('');
+
+  // Learning banner
+  const banner = document.getElementById('search-learn-banner');
+  banner.style.display = S.memory.length ? '' : 'none';
+  if (S.memory.length) {
+    const bought = S.memory.filter(m=>m.type==='bought').length;
+    const passed = S.memory.filter(m=>m.type==='passed').length;
+    banner.textContent = `● AI calibrated from ${S.memory.length} outcomes: ${bought} successful buys, ${passed} passes`;
+  }
 }
 
-// ═══════════════════════════════════
+// ═══════════════════════════════════════════════
 //  AI SEARCH
-// ═══════════════════════════════════
+// ═══════════════════════════════════════════════
 async function runAiSearch() {
   const q = getQuery();
-  if (!q) { toast('Enter a search query first', 'error'); return; }
-  if (!S.apiKey) { toast('Set your API key in Settings', 'error'); switchTab('settings'); return; }
+  if(!q){toast('Enter a search query','error');return;}
+  if(!S.apiKey){toast('Set your API key in Settings','error');switchTab('settings');return;}
 
-  // Update platform links with current query
   renderSearchUI();
 
-  const status = document.getElementById('search-status');
-  const statusText = document.getElementById('search-status-text');
+  const status   = document.getElementById('search-status');
+  const statusTxt= document.getElementById('search-status-text');
   const resultsDiv = document.getElementById('search-results');
-  const btn = document.getElementById(searchMode === 'quick' ? 'search-btn' : 'adv-search-btn');
+  const btnId    = searchMode==='quick'?'search-btn':'adv-search-btn';
+  const btn      = document.getElementById(btnId);
 
-  btn.disabled = true;
-  btn.innerHTML = '<span class="spinner"></span> Searching…';
-  status.style.display = 'flex';
-  statusText.textContent = `Searching platforms for "${q}"…`;
-  resultsDiv.innerHTML = '';
+  btn.disabled=true; btn.innerHTML='<span class="spinner"></span> Searching…';
+  status.style.display='flex'; statusTxt.textContent=`Searching for "${q}" across platforms…`;
+  resultsDiv.innerHTML='';
 
   try {
-    const results = await callClaudeSearch(q);
-    status.style.display = 'none';
-    if (!results.length) {
-      resultsDiv.innerHTML = `<div style="color:var(--muted);font-size:13px;padding:16px 0;">No listings found. Try a broader query.</div>`;
+    const learned = buildLearnedContext();
+    const systemPrompt = SEARCH_BASE + learned;
+    const results = await callClaudeSearch(q, systemPrompt);
+    status.style.display='none';
+    if(!results.length){
+      resultsDiv.innerHTML=`<div style="color:var(--muted);font-size:13px;padding:16px 0;">No listings found. Try a broader query.</div>`;
     } else {
-      resultsDiv.innerHTML = `
+      resultsDiv.innerHTML=`
         <div style="color:var(--muted);font-size:11px;letter-spacing:1px;text-transform:uppercase;margin-bottom:10px;">${results.length} listings found</div>
-        <div class="search-results">${results.map((r, i) => searchResultHtml(r, i+1)).join('')}</div>`;
+        <div class="search-results">${results.map((r,i)=>searchResultHtml(r,i+1)).join('')}</div>`;
     }
   } catch(e) {
-    status.style.display = 'none';
-    resultsDiv.innerHTML = `<div class="card" style="border-color:var(--red);color:var(--red);">
-      <strong>Search error:</strong> ${esc(e.message)}
-      <br><br><button class="btn btn-sm" onclick="runAiSearch()">Retry</button>
+    status.style.display='none';
+    resultsDiv.innerHTML=`<div class="result-card" style="border-color:var(--red);">
+      <div style="color:var(--red);font-weight:bold;margin-bottom:8px;">Search error</div>
+      <pre style="white-space:pre-wrap;color:var(--muted);font-size:11px;">${esc(e.message)}</pre>
+      <button class="btn btn-sm" style="margin-top:12px;" onclick="runAiSearch()">Retry</button>
     </div>`;
   } finally {
-    btn.disabled = false;
-    btn.innerHTML = 'AI Search ↗';
+    btn.disabled=false; btn.innerHTML='AI Search ↗';
   }
 }
 
-async function callClaudeSearch(query) {
+async function callClaudeSearch(query, systemPrompt) {
   const resp = await fetch('https://api.anthropic.com/v1/messages', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'x-api-key': S.apiKey,
-      'anthropic-version': '2023-06-01',
-      'anthropic-dangerous-direct-browser-access': 'true'
+    method:'POST',
+    headers:{
+      'Content-Type':'application/json',
+      'x-api-key':S.apiKey,
+      'anthropic-version':'2023-06-01',
+      'anthropic-dangerous-direct-browser-access':'true'
     },
     body: JSON.stringify({
-      model: 'claude-sonnet-4-20250514',
-      max_tokens: 4096,
-      tools: [{ type: 'web_search_20250305', name: 'web_search' }],
-      system: SEARCH_SYSTEM,
-      messages: [{
-        role: 'user',
-        content: `Find vintage ski/snowboard clothing listings matching: "${query}"\n\nSearch tradera.com, vinted.se, sellpy.se, and ebay.com. Return the best 6-12 current listings as a JSON array only.`
-      }]
+      model:'claude-sonnet-4-20250514',
+      max_tokens:4096,
+      tools:[{type:'web_search_20250305',name:'web_search'}],
+      system: systemPrompt,
+      messages:[{role:'user',content:`Find vintage ski/snowboard clothing listings matching: "${query}"\nSearch tradera.com, vinted.se, sellpy.se, ebay.com, blocket.se, tise.com. Return 6-12 best listings as a JSON array only.`}]
     })
   });
-
-  if (!resp.ok) {
-    const body = await resp.text();
-    throw new Error(`API ${resp.status}: ${body.slice(0, 200)}`);
-  }
-
+  if(!resp.ok){const b=await resp.text();throw new Error(`API ${resp.status}: ${b.slice(0,200)}`);}
   const data = await resp.json();
-
-  // Collect all text from response content blocks
-  let text = '';
-  for (const block of (data.content || [])) {
-    if (block.type === 'text') text += block.text;
-  }
-
-  // Extract JSON array from response
+  let text='';
+  for(const block of (data.content||[])){if(block.type==='text') text+=block.text;}
   const match = text.match(/\[[\s\S]*\]/);
-  if (!match) throw new Error('No results returned. Claude response: ' + text.slice(0, 200));
+  if(!match) throw new Error('No results returned. Response:\n'+text.slice(0,300));
   return JSON.parse(match[0]);
 }
 
 function searchResultHtml(r, num) {
-  const priceTxt = r.price_sek != null ? `${r.price_sek} SEK` : (r.price_raw || '?');
-  const eraTxt = r.era && r.era !== 'unknown' ? r.era : '';
-  const condTxt = r.condition || '';
+  const priceTxt = r.price_sek!=null?`${r.price_sek} SEK`:(r.price_raw||'?');
+  const eraTxt   = r.era&&r.era!=='unknown'?r.era:'';
+  const condTxt  = r.condition&&r.condition!=='unknown'?r.condition:'';
   return `<div class="result-item">
     <div class="result-num">${num}</div>
     <div class="result-body">
-      <div class="result-title">${esc(r.title || 'Untitled')}</div>
+      <div class="result-title">${esc(r.title||'Untitled')}</div>
       <div class="result-meta">
-        ${r.brand && r.brand !== 'unknown' ? `<span class="tag">${esc(r.brand)}</span>` : ''}
-        ${eraTxt ? `<span class="tag">${esc(eraTxt)}</span>` : ''}
-        ${condTxt ? `<span class="tag">${esc(condTxt)}</span>` : ''}
-        ${r.platform ? `<span class="tag tag-plat">${esc(r.platform)}</span>` : ''}
+        ${r.brand&&r.brand!=='unknown'?`<span class="tag">${esc(r.brand)}</span>`:''}
+        ${eraTxt?`<span class="tag">${esc(eraTxt)}</span>`:''}
+        ${condTxt?`<span class="tag">${esc(condTxt)}</span>`:''}
+        ${r.platform?`<span class="tag tag-plat">${esc(r.platform)}</span>`:''}
       </div>
-      <div class="result-take">${esc(r.quick_take || '')}</div>
-      ${r.url ? `<div style="margin-top:8px;"><a href="${esc(r.url)}" target="_blank" rel="noopener" class="btn btn-sm">Open listing ↗</a></div>` : ''}
+      <div class="result-take">${esc(r.quick_take||'')}</div>
+      ${r.url?`<div style="margin-top:8px;"><a href="${esc(r.url)}" target="_blank" rel="noopener" class="btn btn-sm">Open listing ↗</a></div>`:''}
     </div>
     <div class="result-price">${esc(priceTxt)}</div>
   </div>`;
 }
 
-// ═══════════════════════════════════
+// ═══════════════════════════════════════════════
 //  SCORING
-// ═══════════════════════════════════
+// ═══════════════════════════════════════════════
 let lastScore = null;
 
 async function scoreListing() {
-  const text = document.getElementById('listing-text').value.trim();
+  const text     = document.getElementById('listing-text').value.trim();
   const platform = document.getElementById('score-platform').value;
-  if (!text) { toast('Paste a listing first', 'error'); return; }
-  if (!S.apiKey) { toast('No API key — go to Settings', 'error'); switchTab('settings'); return; }
+  if(!text){toast('Paste a listing first','error');return;}
+  if(!S.apiKey){toast('No API key — go to Settings','error');switchTab('settings');return;}
 
   const btn = document.getElementById('score-btn');
   const out = document.getElementById('score-result');
-  btn.disabled = true;
-  btn.innerHTML = '<span class="spinner"></span> Scoring…';
-  out.innerHTML = '';
+  btn.disabled=true; btn.innerHTML='<span class="spinner"></span> Scoring…';
+  out.innerHTML='';
 
   try {
-    const result = await callClaudeScore(text, platform);
-    lastScore = { result, text, platform };
+    const learned = buildLearnedContext();
+    const systemPrompt = SCORE_BASE + learned;
+    const result = await callClaudeScore(text, platform, systemPrompt);
+    lastScore = {result, text, platform};
     out.innerHTML = scoreCardHtml(result, platform, true);
+
+    // Update score learn banner
+    const banner = document.getElementById('score-learn-banner');
+    banner.style.display = S.memory.length?'':'none';
+    if(S.memory.length) banner.textContent=`● Scoring calibrated from ${S.memory.length} outcomes`;
   } catch(e) {
-    out.innerHTML = `<div class="result-card" style="border-color:var(--red);">
+    out.innerHTML=`<div class="result-card" style="border-color:var(--red);">
       <div style="color:var(--red);font-weight:bold;margin-bottom:8px;">Error</div>
       <pre style="white-space:pre-wrap;color:var(--muted);font-size:11px;">${esc(e.message)}</pre>
       <button class="btn btn-sm" style="margin-top:12px;" onclick="scoreListing()">Retry</button>
     </div>`;
   } finally {
-    btn.disabled = false;
-    btn.innerHTML = 'Score with AI';
+    btn.disabled=false; btn.innerHTML='Score with AI';
   }
 }
 
-async function callClaudeScore(text, platform) {
+async function callClaudeScore(text, platform, systemPrompt) {
   const resp = await fetch('https://api.anthropic.com/v1/messages', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'x-api-key': S.apiKey,
-      'anthropic-version': '2023-06-01',
-      'anthropic-dangerous-direct-browser-access': 'true'
+    method:'POST',
+    headers:{
+      'Content-Type':'application/json',
+      'x-api-key':S.apiKey,
+      'anthropic-version':'2023-06-01',
+      'anthropic-dangerous-direct-browser-access':'true'
     },
     body: JSON.stringify({
-      model: 'claude-sonnet-4-20250514',
-      max_tokens: 1024,
-      system: SCORE_SYSTEM,
-      messages: [{ role: 'user', content: `Platform: ${platform}\n\n${text}` }]
+      model:'claude-sonnet-4-20250514',
+      max_tokens:1024,
+      system: systemPrompt,
+      messages:[{role:'user',content:`Platform: ${platform}\n\n${text}`}]
     })
   });
-  if (!resp.ok) { const b = await resp.text(); throw new Error(`API ${resp.status}: ${b.slice(0,200)}`); }
-  const data = await resp.json();
-  const raw = data.content[0].text;
-  const match = raw.match(/\{[\s\S]*\}/);
-  if (!match) throw new Error('No JSON in response:\n' + raw.slice(0, 300));
+  if(!resp.ok){const b=await resp.text();throw new Error(`API ${resp.status}: ${b.slice(0,200)}`);}
+  const data=await resp.json();
+  const raw=data.content[0].text;
+  const match=raw.match(/\{[\s\S]*\}/);
+  if(!match) throw new Error('No JSON in response:\n'+raw.slice(0,300));
   return JSON.parse(match[0]);
 }
 
 function scoreCardHtml(r, platform, showSave) {
-  const cls = badgeClass(r.score);
-  const flags = (r.flags || []).map(f => `<span class="tag tag-flag">${esc(f)}</span>`).join(' ');
+  const cls   = badgeClass(r.score);
+  const flags = (r.flags||[]).map(f=>`<span class="tag tag-flag">${esc(f)}</span>`).join(' ');
   const saveBtn = showSave
-    ? `<button class="btn btn-primary" style="margin-top:14px;" onclick="saveDeal()">Save to Deal Board</button>`
-    : '';
+    ? `<button class="btn btn-primary" style="margin-top:14px;" onclick="saveDeal()">Save to Deal Board</button>` : '';
   return `<div class="result-card">
     <div class="deal-card-top" style="margin-bottom:12px;">
       <div class="score-badge ${cls}">${r.score}</div>
       <div class="deal-card-meta">
         <div class="row" style="gap:5px;flex-wrap:wrap;margin-bottom:5px;">
           <span class="tag">${esc(r.brand_tier||'?')} tier</span>
-          <span class="tag">${esc(r.era||'era?')}</span>
+          <span class="tag">${esc(r.era||'?')}</span>
           <span class="tag">${esc(r.condition||'?')}</span>
           <span class="tag tag-plat">${esc(platform)}</span>
         </div>
@@ -866,65 +907,75 @@ function scoreCardHtml(r, platform, showSave) {
       </div>
     </div>
     <div class="deal-prices" style="margin-bottom:8px;">
-      ${r.buy_price_sek != null ? `<span class="buy">Buy: ${r.buy_price_sek} SEK</span>` : ''}
-      ${r.estimated_resale_sek != null ? `<span class="resale">Resale: ~${r.estimated_resale_sek} SEK</span>` : ''}
-      ${r.margin_estimate ? `<span class="margin">×${esc(r.margin_estimate)}</span>` : ''}
+      ${r.buy_price_sek!=null?`<span class="buy">Buy: ${r.buy_price_sek} SEK</span>`:''}
+      ${r.estimated_resale_sek!=null?`<span class="resale">Resale: ~${r.estimated_resale_sek} SEK</span>`:''}
+      ${r.margin_estimate?`<span class="margin">×${esc(r.margin_estimate)}</span>`:''}
     </div>
-    ${flags ? `<div style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:6px;">${flags}</div>` : ''}
+    ${flags?`<div style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:6px;">${flags}</div>`:''}
     ${saveBtn}
   </div>`;
 }
 
 function saveDeal() {
-  if (!lastScore) return;
-  const { result: r, text, platform } = lastScore;
+  if(!lastScore) return;
+  const {result:r, text, platform} = lastScore;
   let url = extractUrl(text);
-  if (!url) url = prompt('No URL found. Paste the listing URL (or leave blank):') || '';
+  if(!url) url = prompt('No URL found. Paste listing URL (or leave blank):')||'';
   const deal = {
-    id: uid(), score: r.score, brand_tier: r.brand_tier||'unknown',
-    era: r.era||'unknown', condition: r.condition||'unknown',
-    buy_price_sek: r.buy_price_sek, estimated_resale_sek: r.estimated_resale_sek,
-    margin_estimate: r.margin_estimate||'unknown', verdict: r.verdict||'',
-    flags: r.flags||[], platform, listing_url: url, raw_paste: text,
-    claimed_by: S.teamName, status: 'Available', created_at: new Date().toISOString()
+    id:uid(), score:r.score, brand_tier:r.brand_tier||'unknown',
+    era:r.era||'unknown', condition:r.condition||'unknown',
+    buy_price_sek:r.buy_price_sek, estimated_resale_sek:r.estimated_resale_sek,
+    margin_estimate:r.margin_estimate||'unknown', verdict:r.verdict||'',
+    flags:r.flags||[], platform, listing_url:url, raw_paste:text,
+    claimed_by:S.teamName, status:'Available', created_at:new Date().toISOString(),
+    sell_price_sek: null
   };
   S.deals.unshift(deal);
   save();
-  toast('Deal saved to board!', 'success');
+  toast('Deal saved to board!','success');
 }
 
-// ═══════════════════════════════════
+// ═══════════════════════════════════════════════
 //  DEAL BOARD
-// ═══════════════════════════════════
+// ═══════════════════════════════════════════════
 function renderBoard() {
   const statusF   = document.getElementById('filter-status').value;
   const platformF = document.getElementById('filter-platform').value;
-  const minScore  = parseInt(document.getElementById('filter-score').value) || 1;
+  const minScore  = parseInt(document.getElementById('filter-score').value)||1;
   const sortBy    = document.getElementById('sort-by').value;
 
-  let deals = S.deals.filter(d => {
-    if (statusF   && d.status   !== statusF)  return false;
-    if (platformF && d.platform !== platformF) return false;
-    if (d.score < minScore)                    return false;
+  let deals = S.deals.filter(d=>{
+    if(statusF  &&d.status  !==statusF)  return false;
+    if(platformF&&d.platform!==platformF) return false;
+    if(d.score<minScore) return false;
     return true;
-  }).sort((a, b) => {
-    if (sortBy === 'score') return b.score - a.score;
-    if (sortBy === 'price') return (a.buy_price_sek??9999)-(b.buy_price_sek??9999);
+  }).sort((a,b)=>{
+    if(sortBy==='score') return b.score-a.score;
+    if(sortBy==='price') return (a.buy_price_sek??9999)-(b.buy_price_sek??9999);
     return new Date(b.created_at)-new Date(a.created_at);
   });
 
-  const grid = document.getElementById('deal-grid');
-  const empty = document.getElementById('board-empty');
-  if (!deals.length) { grid.innerHTML = ''; empty.style.display = ''; return; }
-  empty.style.display = 'none';
-  grid.innerHTML = deals.map(dealCardHtml).join('');
+  const grid=document.getElementById('deal-grid');
+  const empty=document.getElementById('board-empty');
+  if(!deals.length){grid.innerHTML='';empty.style.display='';return;}
+  empty.style.display='none';
+  grid.innerHTML=deals.map(dealCardHtml).join('');
 }
 
 function dealCardHtml(d) {
-  const cls = badgeClass(d.score);
-  const flags = (d.flags||[]).map(f=>`<span class="tag tag-flag">${esc(f)}</span>`).join(' ');
-  const urlBtn = d.listing_url
-    ? `<a href="${esc(d.listing_url)}" target="_blank" rel="noopener" class="btn btn-sm">Open ↗</a>` : '';
+  const cls=badgeClass(d.score);
+  const flags=(d.flags||[]).map(f=>`<span class="tag tag-flag">${esc(f)}</span>`).join(' ');
+  const urlBtn=d.listing_url?`<a href="${esc(d.listing_url)}" target="_blank" rel="noopener" class="btn btn-sm">Open ↗</a>`:'';
+  const isBought = d.status==='Bought';
+  const sellRow = isBought ? `
+    <div class="sell-price-row">
+      <label>Sold for (SEK):</label>
+      <input type="number" min="0" placeholder="actual sell price"
+        value="${d.sell_price_sek||''}"
+        onchange="recordSellPrice('${d.id}', this.value)"
+        style="width:120px;">
+      ${d.sell_price_sek&&d.buy_price_sek?`<span style="color:var(--green);font-weight:bold;">${(d.sell_price_sek/d.buy_price_sek).toFixed(1)}×</span>`:''}
+    </div>` : '';
   return `<div class="deal-card">
     <div class="deal-card-top">
       <div class="score-badge ${cls}">${d.score}</div>
@@ -934,26 +985,28 @@ function dealCardHtml(d) {
           <span class="tag">${esc(d.era)}</span>
           <span class="tag">${esc(d.condition)}</span>
           <span class="tag tag-plat">${esc(d.platform)}</span>
+          ${d.sell_price_sek?'<span class="tag tag-learn">sold</span>':''}
         </div>
         <div class="deal-card-verdict">"${esc(d.verdict)}"</div>
       </div>
     </div>
     <div class="deal-prices">
-      ${d.buy_price_sek  != null ? `<span class="buy">Buy: ${d.buy_price_sek} SEK</span>` : ''}
-      ${d.estimated_resale_sek != null ? `<span class="resale">~${d.estimated_resale_sek} SEK</span>` : ''}
-      ${d.margin_estimate ? `<span class="margin">×${esc(d.margin_estimate)}</span>` : ''}
+      ${d.buy_price_sek!=null?`<span class="buy">Buy: ${d.buy_price_sek} SEK</span>`:''}
+      ${d.estimated_resale_sek!=null?`<span class="resale">~${d.estimated_resale_sek} SEK</span>`:''}
+      ${d.margin_estimate?`<span class="margin">×${esc(d.margin_estimate)}</span>`:''}
     </div>
-    ${flags ? `<div style="display:flex;gap:4px;flex-wrap:wrap;">${flags}</div>` : ''}
+    ${flags?`<div style="display:flex;gap:4px;flex-wrap:wrap;">${flags}</div>`:''}
     <div class="deal-card-footer">
       <div class="row" style="gap:6px;">
         <select class="btn btn-sm" style="width:auto;min-height:30px;"
-          onchange="updateDeal('${d.id}','status',this.value)">
+          onchange="onStatusChange('${d.id}', this.value)">
           ${['Available','Claimed','Bought','Pass'].map(s=>`<option${d.status===s?' selected':''}>${s}</option>`).join('')}
         </select>
         <input type="text" value="${esc(d.claimed_by||'')}" placeholder="Claimed by…"
           style="flex:1;min-height:30px;font-size:11px;"
           onchange="updateDeal('${d.id}','claimed_by',this.value)">
       </div>
+      ${sellRow}
       <div class="deal-card-actions">
         <span style="color:var(--muted);font-size:10px;">${relTime(d.created_at)}</span>
         <div class="row" style="gap:5px;">${urlBtn}<button class="btn btn-sm btn-danger" onclick="deleteDeal('${d.id}')">Delete</button></div>
@@ -962,113 +1015,151 @@ function dealCardHtml(d) {
   </div>`;
 }
 
+function onStatusChange(id, newStatus) {
+  const d = S.deals.find(x=>x.id===id);
+  if(!d) return;
+  const oldStatus = d.status;
+  d.status = newStatus;
+  save();
+  renderBoard();
+
+  // Record to AI memory
+  if(newStatus==='Pass' && oldStatus!=='Pass') {
+    const note = prompt('Optional: why are you passing? (helps AI learn)', '') || '';
+    addMemory({
+      type:'passed', brand_tier:d.brand_tier, era:d.era, condition:d.condition,
+      platform:d.platform, buy_price_sek:d.buy_price_sek, score:d.score,
+      verdict:d.verdict, note
+    });
+    updateMemoryCount();
+    toast('Pass recorded — AI will learn from this','info');
+  }
+  if(newStatus==='Bought' && oldStatus!=='Bought') {
+    toast('Mark the actual sell price when you resell it — helps AI calibrate','info');
+  }
+}
+
+function recordSellPrice(id, value) {
+  const d = S.deals.find(x=>x.id===id);
+  if(!d) return;
+  const sellPrice = parseFloat(value);
+  if(!sellPrice||sellPrice<=0) return;
+  d.sell_price_sek = sellPrice;
+  save();
+
+  // Record to AI memory
+  addMemory({
+    type:'bought', brand_tier:d.brand_tier, era:d.era, condition:d.condition,
+    platform:d.platform, buy_price_sek:d.buy_price_sek, sell_price_sek:sellPrice,
+    score:d.score, verdict:d.verdict, note:''
+  });
+  updateMemoryCount();
+  renderBoard();
+  toast(`Outcome recorded — AI now knows this ${d.brand_tier} tier piece sold for ${sellPrice} SEK`, 'success');
+}
+
 function updateDeal(id, field, value) {
-  const d = S.deals.find(x => x.id === id);
-  if (d) { d[field] = value; save(); }
+  const d=S.deals.find(x=>x.id===id);
+  if(d){d[field]=value;save();}
 }
 
 function deleteDeal(id) {
-  if (!confirm('Delete this deal?')) return;
-  S.deals = S.deals.filter(d => d.id !== id);
-  save(); renderBoard(); toast('Deleted', 'info');
+  if(!confirm('Delete this deal?')) return;
+  S.deals=S.deals.filter(d=>d.id!==id);
+  save(); renderBoard(); toast('Deleted','info');
 }
 
-// ═══════════════════════════════════
+// ═══════════════════════════════════════════════
 //  EXPORT / IMPORT
-// ═══════════════════════════════════
+// ═══════════════════════════════════════════════
 function exportDeals() {
-  if (!S.deals.length) { toast('No deals to export', 'error'); return; }
-  const date = new Date().toISOString().slice(0,10);
-  const blob = new Blob([JSON.stringify(S.deals, null, 2)], { type: 'application/json' });
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = `deals-${date}.json`;
-  a.click();
+  if(!S.deals.length){toast('No deals to export','error');return;}
+  const date=new Date().toISOString().slice(0,10);
+  const blob=new Blob([JSON.stringify(S.deals,null,2)],{type:'application/json'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob); a.download=`deals-${date}.json`; a.click();
   URL.revokeObjectURL(a.href);
-  toast(`Exported ${S.deals.length} deals`, 'success');
+  toast(`Exported ${S.deals.length} deals`,'success');
 }
 
 function importDeals(input) {
-  const file = input.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = e => {
-    try {
-      const incoming = JSON.parse(e.target.result);
-      if (!Array.isArray(incoming)) throw new Error('Expected array');
-      const existing = new Set(S.deals.map(d => d.id));
-      const fresh = incoming.filter(d => d?.id && !existing.has(d.id));
-      S.deals.unshift(...fresh);
-      save();
-      if (S.activeTab === 'board') renderBoard();
+  const file=input.files[0]; if(!file) return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    try{
+      const incoming=JSON.parse(e.target.result);
+      if(!Array.isArray(incoming)) throw new Error('Expected array');
+      const existing=new Set(S.deals.map(d=>d.id));
+      const fresh=incoming.filter(d=>d?.id&&!existing.has(d.id));
+      S.deals.unshift(...fresh); save();
+      if(S.activeTab==='board') renderBoard();
       toast(`Imported ${fresh.length} new deal${fresh.length!==1?'s':''}`, 'success');
-    } catch(err) { toast('Import failed: ' + err.message, 'error'); }
-    input.value = '';
+    } catch(err){toast('Import failed: '+err.message,'error');}
+    input.value='';
   };
   reader.readAsText(file);
 }
 
-// ═══════════════════════════════════
+// ═══════════════════════════════════════════════
 //  SETTINGS
-// ═══════════════════════════════════
+// ═══════════════════════════════════════════════
 function renderSettings() {
   document.getElementById('api-key-input').value   = S.apiKey;
   document.getElementById('team-name-input').value = S.teamName;
   renderBrandList();
+  updateMemoryCount();
 }
 
 function renderBrandList() {
   document.getElementById('brand-list').innerHTML = S.brands
-    .map(b => `<span class="brand-chip">${esc(b)}<button onclick="removeBrand(${JSON.stringify(b)})" title="Remove">×</button></span>`)
+    .map(b=>`<span class="brand-chip">${esc(b)}<button onclick="removeBrand(${JSON.stringify(b)})" title="Remove">×</button></span>`)
     .join('');
 }
 
 function saveApiKey() {
-  S.apiKey = document.getElementById('api-key-input').value.trim();
-  save(); updateApiBanner(); toast('API key saved', 'success');
+  S.apiKey=document.getElementById('api-key-input').value.trim();
+  save(); updateApiBanner(); toast('API key saved','success');
 }
 
 function saveTeamName() {
-  S.teamName = document.getElementById('team-name-input').value.trim();
-  save(); toast('Name saved', 'success');
+  S.teamName=document.getElementById('team-name-input').value.trim();
+  save(); toast('Name saved','success');
 }
 
 function toggleKeyVisibility() {
-  const inp = document.getElementById('api-key-input');
-  const btn = document.getElementById('show-key-btn');
-  if (inp.type === 'password') { inp.type = 'text'; btn.textContent = 'Hide'; }
-  else                         { inp.type = 'password'; btn.textContent = 'Show'; }
+  const inp=document.getElementById('api-key-input');
+  const btn=document.getElementById('show-key-btn');
+  if(inp.type==='password'){inp.type='text';btn.textContent='Hide';}
+  else{inp.type='password';btn.textContent='Show';}
 }
 
 function addBrand() {
-  const inp = document.getElementById('brand-input');
-  const brand = inp.value.trim();
-  if (!brand) return;
-  if (S.brands.includes(brand)) { toast('Already in list', 'error'); return; }
+  const inp=document.getElementById('brand-input');
+  const brand=inp.value.trim(); if(!brand) return;
+  if(S.brands.includes(brand)){toast('Already in list','error');return;}
   S.brands.push(brand); save(); renderBrandList(); renderSearchUI();
-  inp.value = '';
-  toast(`Added "${brand}"`, 'success');
+  inp.value=''; toast(`Added "${brand}"`,'success');
 }
 
 function removeBrand(brand) {
-  S.brands = S.brands.filter(b => b !== brand);
+  S.brands=S.brands.filter(b=>b!==brand);
   save(); renderBrandList(); renderSearchUI();
 }
 
 function clearAllDeals() {
-  if (!confirm('Delete ALL deals? This cannot be undone.')) return;
-  S.deals = []; save();
-  if (S.activeTab === 'board') renderBoard();
-  toast('All deals cleared', 'info');
+  if(!confirm('Delete ALL deals? Cannot be undone.')) return;
+  S.deals=[]; save();
+  if(S.activeTab==='board') renderBoard();
+  toast('All deals cleared','info');
 }
 
 function updateApiBanner() {
-  document.getElementById('api-banner').style.display = S.apiKey ? 'none' : '';
+  document.getElementById('api-banner').style.display=S.apiKey?'none':'';
 }
 
-// ═══════════════════════════════════
+// ═══════════════════════════════════════════════
 //  INIT
-// ═══════════════════════════════════
+// ═══════════════════════════════════════════════
 loadState();
 updateApiBanner();
 renderSearchUI();
