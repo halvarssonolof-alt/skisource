@@ -11,12 +11,12 @@ const PALETTES = {
 };
 
 const CONFIG = {
-  polygonDensity:  600,
-  edgeSensitivity: 70,
+  polygonDensity:  1200,
+  edgeSensitivity: 85,
   colorDepth:      24,
-  affineWarp:      80,
+  affineWarp:      20,
   ditherStrength:  0,
-  vertexJitter:    30,
+  vertexJitter:    10,
   scanlines:       true,
   colorBanding:    false,
   zFighting:       false,
@@ -33,7 +33,7 @@ const CONFIG = {
 };
 
 const PRESETS = {
-  'pure-ps1':    () => Object.assign(CONFIG, { polygonDensity:600,  edgeSensitivity:70, colorDepth:24,  affineWarp:80, ditherStrength:0,  vertexJitter:30, scanlines:true,  colorBanding:false, zFighting:false, interlaceFlash:false, fogEffect:false, subpixelWobble:false, renderStyle:'flat',     palette:'ps1dark'  }),
+  'pure-ps1':    () => Object.assign(CONFIG, { polygonDensity:1200, edgeSensitivity:85, colorDepth:24,  affineWarp:20, ditherStrength:0,  vertexJitter:10, scanlines:true,  colorBanding:false, zFighting:false, interlaceFlash:false, fogEffect:false, subpixelWobble:false, renderStyle:'flat',     palette:'ps1dark'  }),
   'dreamcast':   () => Object.assign(CONFIG, { polygonDensity:900,  edgeSensitivity:60, colorDepth:48,  affineWarp:20, ditherStrength:0,  vertexJitter:10, scanlines:false, colorBanding:false, zFighting:false, interlaceFlash:false, fogEffect:false, subpixelWobble:false, renderStyle:'gouraud',  palette:'ps1dark'  }),
   'acid-rave':   () => Object.assign(CONFIG, { polygonDensity:400,  edgeSensitivity:50, colorDepth:32,  affineWarp:0,  ditherStrength:80, vertexJitter:0,  scanlines:false, colorBanding:false, zFighting:false, interlaceFlash:false, fogEffect:false, subpixelWobble:false, renderStyle:'dither',   palette:'acid'     }),
   'vaporwave':   () => Object.assign(CONFIG, { polygonDensity:1200, edgeSensitivity:80, colorDepth:64,  affineWarp:10, ditherStrength:0,  vertexJitter:5,  scanlines:false, colorBanding:true,  zFighting:false, interlaceFlash:false, fogEffect:false, subpixelWobble:false, renderStyle:'vector',   palette:'vhswarm'  }),
