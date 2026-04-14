@@ -337,6 +337,17 @@
       <button class="btn btn-sm btn-primary" onclick="addBrand()">Add</button>
     </div>
   </div>
+  <div class="card col" style="margin-bottom:14px;border-color:rgba(139,124,246,.25);">
+    <div class="lbl" style="color:var(--accent);margin-bottom:6px;">Notable styles to watch for</div>
+    <p style="color:var(--muted);font-size:11px;line-height:1.6;margin-bottom:8px;">
+      List niche styles, cuts, or items the AI should actively look for when searching — one per line.
+      E.g. "studded ski pants", "stirrup ski pants", "one-piece bib suits", "Gore-Tex shell 90s".
+    </p>
+    <textarea id="styles-input" placeholder="studded ski pants&#10;stirrup pants&#10;one-piece bib suit&#10;Gore-Tex shell 90s" style="min-height:90px;"></textarea>
+    <div style="margin-top:6px;">
+      <button class="btn btn-sm btn-primary" onclick="saveStyles()">Save</button>
+    </div>
+  </div>
   <div class="card" style="margin-bottom:14px;border-color:rgba(34,197,94,.25);">
     <div class="lbl" style="color:var(--green);margin-bottom:10px;">AI Memory <span id="memory-count"></span></div>
     <p style="color:var(--muted);font-size:11px;line-height:1.6;margin-bottom:10px;">
@@ -499,7 +510,8 @@ let S = {
   teamName:'',
   activeTab:'search',
   // AI memory: outcomes the model learns from
-  memory: []  // {type:'bought'|'passed', brand_tier, era, condition, platform, buy_price_sek, sell_price_sek, score, verdict, note, ts}
+  memory: [],  // {type:'bought'|'passed', brand_tier, era, condition, platform, buy_price_sek, sell_price_sek, score, verdict, note, ts}
+  styles: ''   // notable styles/items to watch for, injected into search prompt
 };
 
 function loadState() {
@@ -509,11 +521,13 @@ function loadState() {
     const k = localStorage.getItem('ski_apikey');
     const n = localStorage.getItem('ski_teamname');
     const m = localStorage.getItem('ski_memory');
+    const y = localStorage.getItem('ski_styles');
     if (d) S.deals    = JSON.parse(d);
     if (b) S.brands   = JSON.parse(b);
     if (k) S.apiKey   = k;
     if (n) S.teamName = n;
     if (m) S.memory   = JSON.parse(m);
+    if (y) S.styles   = y;
   } catch(e) { console.error(e); }
 }
 
@@ -524,6 +538,7 @@ function save() {
     localStorage.setItem('ski_apikey',   S.apiKey);
     localStorage.setItem('ski_teamname', S.teamName);
     localStorage.setItem('ski_memory',   JSON.stringify(S.memory));
+    localStorage.setItem('ski_styles',   S.styles);
   } catch(e) { console.error(e); }
 }
 
@@ -757,7 +772,8 @@ async function runAiSearch() {
 
   try {
     const learned = buildLearnedContext();
-    const systemPrompt = SEARCH_BASE + learned;
+    const stylesCtx = S.styles.trim() ? `\n\n═══ NOTABLE STYLES TO ACTIVELY SEARCH FOR ═══\nThis team has flagged these specific styles/items as high-value finds — prioritise them:\n${S.styles.trim()}\n` : '';
+    const systemPrompt = SEARCH_BASE + stylesCtx + learned;
     const results = await callClaudeSearch(q, systemPrompt);
     status.style.display='none';
     if(!results.length){
@@ -1106,8 +1122,14 @@ function importDeals(input) {
 function renderSettings() {
   document.getElementById('api-key-input').value   = S.apiKey;
   document.getElementById('team-name-input').value = S.teamName;
+  document.getElementById('styles-input').value    = S.styles;
   renderBrandList();
   updateMemoryCount();
+}
+
+function saveStyles() {
+  S.styles = document.getElementById('styles-input').value;
+  save(); toast('Styles saved — AI will use these in all searches', 'success');
 }
 
 function renderBrandList() {
