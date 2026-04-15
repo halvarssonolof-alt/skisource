@@ -580,6 +580,30 @@ function buildLearnedContext() {
   return ctx;
 }
 
+// ─── Build style preference context to inject into prompts ───
+function buildStyleContext() {
+  if (!S.styleMemory.length) return '';
+  const good = S.styleMemory.filter(m => m.rating === 'good');
+  const bad  = S.styleMemory.filter(m => m.rating === 'bad');
+  let ctx = '\n\n═══ LEARNED STYLE PREFERENCES ═══\nUse these to calibrate what this team is looking for:\n\n';
+  if (good.length) {
+    ctx += 'LIKED (find more like these):\n';
+    good.slice(-20).forEach(m => {
+      ctx += `• ${m.brand||'?'} | ${m.era||'?'} | ${m.condition||'?'} | ${m.style_notes||''}\n`;
+    });
+    ctx += '\n';
+  }
+  if (bad.length) {
+    ctx += 'DISLIKED (avoid these patterns):\n';
+    bad.slice(-10).forEach(m => {
+      ctx += `• ${m.brand||'?'} | ${m.era||'?'} | ${m.condition||'?'} | ${m.style_notes||''}\n`;
+    });
+    ctx += '\n';
+  }
+  ctx += 'Prioritise listings that match the LIKED patterns. Deprioritise DISLIKED patterns.\n';
+  return ctx;
+}
+
 function addMemory(entry) {
   S.memory.push({ ...entry, ts: new Date().toISOString() });
   // Keep last 50 entries
