@@ -1046,6 +1046,15 @@ async function callClaudeSearch(query, systemPrompt) {
       messages:[{role:'user',content:`Find vintage ski/snowboard clothing listings matching: "${query}"\nSearch tradera.com, vinted.se, sellpy.se, ebay.com, blocket.se, tise.com. For each result you include, you MUST have clicked through to the actual item page and confirmed the direct URL. Do not include any result whose URL is a homepage, search page, or category page. Return 4-12 best listings as a JSON array only.`}]
     })
   });
+  if(resp.status===429){
+    const b=await resp.text();
+    let wait=61;
+    try{ const m=JSON.parse(b)?.error?.message?.match(/(\d+)\s*second/i); if(m) wait=Number(m[1])+1; }catch{}
+    wait=Math.min(wait,90);
+    toast(`Rate limited — retrying in ${wait}s…`,'info');
+    await new Promise(r=>setTimeout(r,wait*1000));
+    return callClaudeSearch(query,systemPrompt);
+  }
   if(!resp.ok){const b=await resp.text();throw new Error(`API ${resp.status}: ${b.slice(0,200)}`);}
   const data = await resp.json();
   let text='';
