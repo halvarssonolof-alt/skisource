@@ -507,6 +507,8 @@ Understand that sellers on these platforms come from all over Europe — Polish,
 
 Prioritise: underpriced items (great pieces under 300 SEK are excellent), rare/collectible pieces regardless of price, items with strong resale potential in the Swedish/European vintage market.
 
+CRITICAL URL RULE: Only include a listing if you have found and verified the direct URL to that specific item page (e.g. tradera.com/item/..., ebay.com/itm/..., vinted.se/items/..., sellpy.se/en/product/..., blocket.se/annons/...). NEVER return a homepage, search results page, or category page URL. If you cannot find a direct item URL, omit that result entirely. It is better to return 4 real listings than 10 with fake URLs.
+
 Return ONLY a JSON array — no markdown, no extra text. Each object:
 {
   "title": "listing title",
@@ -515,12 +517,12 @@ Return ONLY a JSON array — no markdown, no extra text. Each object:
   "price_raw": "original price as shown",
   "condition": "mint|good|fair|poor|unknown",
   "platform": "Tradera|Vinted|Sellpy|eBay|Blocket|Tise|Other",
-  "url": "direct listing URL or search results URL",
+  "url": "direct item URL — must link to a specific listing, not a search page",
   "era": "70s|80s|90s|00s|2010s|unknown",
   "quick_take": "max 12 words: why this is or isn't worth pursuing"
 }
 
-Return 6-12 results across multiple platforms. Always include the URL.`;
+Return 4-12 results. Only include results where you have a direct item URL.`;
 
 // ═══════════════════════════════════════════════
 //  STATE
@@ -718,7 +720,9 @@ function styleResultHtml(r, idx) {
       </div>
       <div style="font-size:15px;color:var(--green);font-weight:bold;white-space:nowrap;">${esc(priceTxt)}</div>
     </div>
-    ${r.url?`<a href="${esc(r.url)}" target="_blank" rel="noopener" class="btn btn-sm" style="width:fit-content;">Open ↗</a>`:''}
+    ${r.url && isDirectListingUrl(r.url)
+      ? `<a href="${esc(r.url)}" target="_blank" rel="noopener" class="btn btn-sm" style="width:fit-content;">Open ↗</a>`
+      : r.url ? `<div style="color:var(--amber);font-size:11px;">⚠ No direct link — search manually on ${esc(r.platform||'platform')}</div>` : ''}
     <div class="deal-card-actions">
       <button class="btn btn-sm" id="style-good-${idx}" onclick="rateStyleItem(${idx},'good')">Good</button>
       <button class="btn btn-sm" id="style-bad-${idx}"  onclick="rateStyleItem(${idx},'bad')">Bad</button>
@@ -1039,7 +1043,7 @@ async function callClaudeSearch(query, systemPrompt) {
       max_tokens:4096,
       tools:[{type:'web_search_20250305',name:'web_search'}],
       system: systemPrompt,
-      messages:[{role:'user',content:`Find vintage ski/snowboard clothing listings matching: "${query}"\nSearch tradera.com, vinted.se, sellpy.se, ebay.com, blocket.se, tise.com. Return 6-12 best listings as a JSON array only.`}]
+      messages:[{role:'user',content:`Find vintage ski/snowboard clothing listings matching: "${query}"\nSearch tradera.com, vinted.se, sellpy.se, ebay.com, blocket.se, tise.com. For each result you include, you MUST have clicked through to the actual item page and confirmed the direct URL. Do not include any result whose URL is a homepage, search page, or category page. Return 4-12 best listings as a JSON array only.`}]
     })
   });
   if(!resp.ok){const b=await resp.text();throw new Error(`API ${resp.status}: ${b.slice(0,200)}`);}
@@ -1051,10 +1055,29 @@ async function callClaudeSearch(query, systemPrompt) {
   return JSON.parse(match[0]);
 }
 
+function isDirectListingUrl(url) {
+  if (!url) return false;
+  try {
+    const u = new URL(url);
+    const p = u.pathname;
+    // Reject bare homepages and obvious search/category pages
+    if (p === '/' || p === '') return false;
+    if (/\/(search|find|results|category|categories|sok|suche)\b/i.test(p)) return false;
+    if (u.search.includes('q=') && !/\/(itm|item|annons|items|product)\//i.test(p)) return false;
+    return true;
+  } catch { return false; }
+}
+
 function searchResultHtml(r, num) {
   const priceTxt = r.price_sek!=null?`${r.price_sek} SEK`:(r.price_raw||'?');
   const eraTxt   = r.era&&r.era!=='unknown'?r.era:'';
   const condTxt  = r.condition&&r.condition!=='unknown'?r.condition:'';
+  const directUrl = isDirectListingUrl(r.url);
+  const urlHtml = r.url
+    ? directUrl
+      ? `<div style="margin-top:8px;"><a href="${esc(r.url)}" target="_blank" rel="noopener" class="btn btn-sm">Open listing ↗</a></div>`
+      : `<div style="margin-top:8px;color:var(--amber);font-size:11px;">⚠ No direct link found — search manually on ${esc(r.platform||'platform')}</div>`
+    : '';
   return `<div class="result-item">
     <div class="result-num">${num}</div>
     <div class="result-body">
@@ -1066,7 +1089,7 @@ function searchResultHtml(r, num) {
         ${r.platform?`<span class="tag tag-plat">${esc(r.platform)}</span>`:''}
       </div>
       <div class="result-take">${esc(r.quick_take||'')}</div>
-      ${r.url?`<div style="margin-top:8px;"><a href="${esc(r.url)}" target="_blank" rel="noopener" class="btn btn-sm">Open listing ↗</a></div>`:''}
+      ${urlHtml}
     </div>
     <div class="result-price">${esc(priceTxt)}</div>
   </div>`;
