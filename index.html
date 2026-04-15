@@ -1029,31 +1029,46 @@ async function runAiSearch() {
   }
 }
 
-async function callClaudeSearch(query, systemPrompt) {
-  const resp = await fetch('https://api.anthropic.com/v1/messages', {
-    method:'POST',
-    headers:{
-      'Content-Type':'application/json',
-      'x-api-key':S.apiKey,
-      'anthropic-version':'2023-06-01',
-      'anthropic-dangerous-direct-browser-access':'true'
-    },
-    body: JSON.stringify({
-      model:'claude-sonnet-4-5',
-      max_tokens:4096,
-      tools:[{type:'web_search_20250305',name:'web_search'}],
-      system: systemPrompt,
-      messages:[{role:'user',content:`Find vintage ski/snowboard clothing listings matching: "${query}"\nSearch tradera.com, vinted.se, sellpy.se, ebay.com, blocket.se, tise.com. For each result you include, you MUST have clicked through to the actual item page and confirmed the direct URL. Do not include any result whose URL is a homepage, search page, or category page. Return 4-12 best listings as a JSON array only.`}]
-    })
-  });
+async function callClaudeSearch(query, systemPrompt, _retries=0) {
+  const TIMEOUT_MS = 90_000; // 90s max
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), TIMEOUT_MS);
+
+  let resp;
+  try {
+    resp = await fetch('https://api.anthropic.com/v1/messages', {
+      signal: controller.signal,
+      method:'POST',
+      headers:{
+        'Content-Type':'application/json',
+        'x-api-key':S.apiKey,
+        'anthropic-version':'2023-06-01',
+        'anthropic-dangerous-direct-browser-access':'true'
+      },
+      body: JSON.stringify({
+        model:'claude-sonnet-4-5',
+        max_tokens:4096,
+        tools:[{type:'web_search_20250305',name:'web_search'}],
+        system: systemPrompt,
+        messages:[{role:'user',content:`Find vintage ski/snowboard clothing listings matching: "${query}"\nSearch tradera.com, vinted.se, sellpy.se, ebay.com, blocket.se, tise.com. For each result you include, you MUST have clicked through to the actual item page and confirmed the direct URL. Do not include any result whose URL is a homepage, search page, or category page. Return 4-12 best listings as a JSON array only.`}]
+      })
+    });
+  } catch(e) {
+    clearTimeout(timer);
+    if(e.name==='AbortError') throw new Error('Search timed out after 90s — try again');
+    throw e;
+  }
+  clearTimeout(timer);
+
   if(resp.status===429){
+    if(_retries>=2) throw new Error('Rate limited — wait a minute then try again');
     const b=await resp.text();
     let wait=61;
     try{ const m=JSON.parse(b)?.error?.message?.match(/(\d+)\s*second/i); if(m) wait=Number(m[1])+1; }catch{}
     wait=Math.min(wait,90);
     toast(`Rate limited — retrying in ${wait}s…`,'info');
     await new Promise(r=>setTimeout(r,wait*1000));
-    return callClaudeSearch(query,systemPrompt);
+    return callClaudeSearch(query,systemPrompt,_retries+1);
   }
   if(!resp.ok){const b=await resp.text();throw new Error(`API ${resp.status}: ${b.slice(0,200)}`);}
   const data = await resp.json();
