@@ -6,21 +6,20 @@
   <title>SkiSource — Vintage Deal Finder</title>
   <style>
     :root {
-      --bg:#0c0c10; --surface:#13131a; --surface2:#1a1a24;
-      --border:#252530; --border2:#32324a;
-      --text:#ddddf0; --muted:#5a5a7a;
-      --green:#22c55e; --amber:#f59e0b; --red:#ef4444;
-      --accent:#8b7cf6; --accent2:#6d5bd0;
+      --bg:#f4f4f6; --surface:#ffffff; --surface2:#f0f0f4;
+      --border:#d8d8e0; --border2:#b8b8cc;
+      --text:#1a1a2e; --muted:#7070a0;
+      --green:#16a34a; --amber:#d97706; --red:#dc2626;
+      --accent:#6d5bd0; --accent2:#5648b0;
       --r:7px; --mono:'Courier New',Courier,monospace;
     }
     *{box-sizing:border-box;margin:0;padding:0}
     body{background:var(--bg);color:var(--text);font-family:var(--mono);font-size:13px;min-height:100vh}
-    body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,.04) 3px,rgba(0,0,0,.04) 4px);pointer-events:none;z-index:9999}
 
     /* NAV */
-    #api-banner{display:none;background:#2a0f0f;border-bottom:1px solid #5a1a1a;color:#f87171;padding:7px 16px;font-size:12px;text-align:center}
-    #api-banner a{color:#f87171;cursor:pointer;text-decoration:underline}
-    .nav{display:flex;align-items:center;background:var(--surface);border-bottom:1px solid var(--border);padding:0 12px;position:sticky;top:0;z-index:200}
+    #api-banner{display:none;background:#fff0f0;border-bottom:1px solid #fca5a5;color:#b91c1c;padding:7px 16px;font-size:12px;text-align:center}
+    #api-banner a{color:#b91c1c;cursor:pointer;text-decoration:underline}
+    .nav{display:flex;align-items:center;background:var(--surface);border-bottom:1px solid var(--border);padding:0 12px;position:sticky;top:0;z-index:200;box-shadow:0 1px 4px rgba(0,0,0,.06)}
     .nav-brand{color:var(--accent);font-weight:bold;font-size:15px;letter-spacing:3px;padding:11px 14px 11px 4px;border-right:1px solid var(--border);margin-right:6px;white-space:nowrap}
     .nav-tab{padding:13px 14px;border:none;background:none;color:var(--muted);font-family:var(--mono);font-size:11px;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;border-bottom:2px solid transparent;transition:color .15s,border-color .15s;white-space:nowrap}
     .nav-tab:hover{color:var(--text)} .nav-tab.active{color:var(--accent);border-bottom-color:var(--accent)}
@@ -38,8 +37,8 @@
     .btn:hover{background:var(--border)}
     .btn-primary{background:var(--accent);border-color:var(--accent);color:#fff}
     .btn-primary:hover{background:var(--accent2);border-color:var(--accent2)}
-    .btn-danger{background:#2a0f0f;border-color:#5a1a1a;color:#f87171}
-    .btn-danger:hover{background:#5a1a1a}
+    .btn-danger{background:#fff0f0;border-color:#fca5a5;color:#b91c1c}
+    .btn-danger:hover{background:#fee2e2}
     .btn-sm{padding:4px 10px;min-height:30px;font-size:11px}
     .btn:disabled{opacity:.4;cursor:not-allowed}
 
@@ -47,19 +46,19 @@
     input[type=text],input[type=password],input[type=number],textarea,select{background:var(--surface2);border:1px solid var(--border2);border-radius:var(--r);color:var(--text);font-family:var(--mono);font-size:13px;padding:8px 11px;width:100%;min-height:40px;outline:none;transition:border-color .15s}
     input:focus,textarea:focus,select:focus{border-color:var(--accent)}
     textarea{min-height:130px;resize:vertical;line-height:1.5}
-    select{cursor:pointer} select option{background:#1a1a24}
+    select{cursor:pointer}
 
     /* BADGES */
     .score-badge{display:inline-flex;align-items:center;justify-content:center;width:50px;height:50px;border-radius:50%;font-size:21px;font-weight:bold;flex-shrink:0}
-    .badge-green{background:rgba(34,197,94,.12);color:var(--green);border:2px solid var(--green)}
-    .badge-amber{background:rgba(245,158,11,.12);color:var(--amber);border:2px solid var(--amber)}
-    .badge-red{background:rgba(239,68,68,.12);color:var(--red);border:2px solid var(--red)}
+    .badge-green{background:#dcfce7;color:var(--green);border:2px solid var(--green)}
+    .badge-amber{background:#fef9c3;color:var(--amber);border:2px solid var(--amber)}
+    .badge-red{background:#fee2e2;color:var(--red);border:2px solid var(--red)}
 
     /* TAGS */
     .tag{display:inline-block;padding:2px 7px;border-radius:4px;font-size:10px;letter-spacing:.8px;text-transform:uppercase;background:var(--surface2);border:1px solid var(--border2);color:var(--muted)}
-    .tag-flag{border-color:#5a1a1a;color:#f87171;background:#2a0f0f}
+    .tag-flag{border-color:#fca5a5;color:#b91c1c;background:#fff0f0}
     .tag-plat{border-color:var(--accent);color:var(--accent)}
-    .tag-learn{border-color:var(--green);color:var(--green);background:rgba(34,197,94,.06)}
+    .tag-learn{border-color:#86efac;color:var(--green);background:#f0fdf4}
 
     /* DEAL GRID */
     .deal-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
@@ -71,9 +70,9 @@
     .deal-prices .buy{color:var(--text)} .deal-prices .resale{color:var(--green)} .deal-prices .margin{color:var(--amber)}
     .deal-card-footer{border-top:1px solid var(--border);padding-top:10px;display:flex;gap:6px;flex-direction:column}
     .deal-card-actions{display:flex;gap:6px;align-items:center;justify-content:space-between}
-    .sell-price-row{display:flex;gap:6px;align-items:center;background:rgba(34,197,94,.05);border:1px solid rgba(34,197,94,.2);border-radius:var(--r);padding:6px 8px;font-size:11px}
+    .sell-price-row{display:flex;gap:6px;align-items:center;background:#f0fdf4;border:1px solid #86efac;border-radius:var(--r);padding:6px 8px;font-size:11px}
     .sell-price-row label{color:var(--green);white-space:nowrap}
-    .sell-price-row input{min-height:28px;font-size:11px;background:transparent;border:none;border-bottom:1px solid rgba(34,197,94,.3);border-radius:0;padding:2px 4px;color:var(--green)}
+    .sell-price-row input{min-height:28px;font-size:11px;background:transparent;border:none;border-bottom:1px solid #86efac;border-radius:0;padding:2px 4px;color:var(--green)}
     .sell-price-row input:focus{border-color:var(--green)}
 
     /* FILTER BAR */
@@ -117,14 +116,14 @@
     .result-card{background:var(--surface);border:1px solid var(--border2);border-radius:var(--r);padding:18px;margin-top:14px}
 
     /* LEARNING BANNER */
-    .learn-banner{background:rgba(34,197,94,.05);border:1px solid rgba(34,197,94,.2);border-radius:var(--r);padding:10px 14px;font-size:11px;color:var(--green);display:flex;align-items:center;gap:8px;margin-bottom:16px}
+    .learn-banner{background:#f0fdf4;border:1px solid #86efac;border-radius:var(--r);padding:10px 14px;font-size:11px;color:var(--green);display:flex;align-items:center;gap:8px;margin-bottom:16px}
 
     /* TOASTS */
     #toasts{position:fixed;bottom:20px;right:20px;display:flex;flex-direction:column;gap:7px;z-index:10000}
-    .toast{padding:9px 15px;border-radius:var(--r);background:var(--surface);border:1px solid var(--border2);color:var(--text);font-size:12px;animation:toast-in .2s ease;max-width:280px;line-height:1.4}
-    .toast.success{border-color:var(--green);color:var(--green)}
-    .toast.error{border-color:var(--red);color:var(--red)}
-    .toast.info{border-color:var(--accent);color:var(--accent)}
+    .toast{padding:9px 15px;border-radius:var(--r);background:#fff;border:1px solid var(--border2);color:var(--text);font-size:12px;animation:toast-in .2s ease;max-width:280px;line-height:1.4;box-shadow:0 2px 8px rgba(0,0,0,.1)}
+    .toast.success{border-color:#86efac;color:var(--green);background:#f0fdf4}
+    .toast.error{border-color:#fca5a5;color:#b91c1c;background:#fff0f0}
+    .toast.info{border-color:var(--accent);color:var(--accent);background:#f5f3ff}
     @keyframes toast-in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 
     /* MISC */
@@ -133,7 +132,7 @@
     .lbl{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:3px}
     hr{border:none;border-top:1px solid var(--border);margin:20px 0}
     .adv-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
-    .fb-card{background:var(--surface);border:1px solid #5a1a1a;border-radius:var(--r);padding:12px 16px;margin-top:8px}
+    .fb-card{background:#fff8f0;border:1px solid #fcd34d;border-radius:var(--r);padding:12px 16px;margin-top:8px}
     .empty{text-align:center;padding:56px 24px;color:var(--muted)}
     .brand-chip{display:inline-flex;align-items:center;gap:5px;background:var(--surface2);border:1px solid var(--border2);border-radius:4px;padding:4px 9px;font-size:12px}
     .brand-chip button{background:none;border:none;color:var(--muted);cursor:pointer;font-size:15px;line-height:1;padding:0;display:flex;align-items:center}
