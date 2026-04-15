@@ -510,8 +510,9 @@ let S = {
   teamName:'',
   activeTab:'search',
   // AI memory: outcomes the model learns from
-  memory: [],  // {type:'bought'|'passed', brand_tier, era, condition, platform, buy_price_sek, sell_price_sek, score, verdict, note, ts}
-  styles: ''   // notable styles/items to watch for, injected into search prompt
+  memory:      [],  // {type:'bought'|'passed', brand_tier, era, condition, platform, buy_price_sek, sell_price_sek, score, verdict, note, ts}
+  styleMemory: [],  // {url, title, brand, era, condition, style_notes, rating:'good'|'bad', ts}
+  styleSeeds:  ''   // raw seed URLs textarea content
 };
 
 function loadState() {
@@ -520,14 +521,16 @@ function loadState() {
     const b = localStorage.getItem('ski_brands');
     const k = localStorage.getItem('ski_apikey');
     const n = localStorage.getItem('ski_teamname');
-    const m = localStorage.getItem('ski_memory');
-    const y = localStorage.getItem('ski_styles');
-    if (d) S.deals    = JSON.parse(d);
-    if (b) S.brands   = JSON.parse(b);
-    if (k) S.apiKey   = k;
-    if (n) S.teamName = n;
-    if (m) S.memory   = JSON.parse(m);
-    if (y) S.styles   = y;
+    const m  = localStorage.getItem('ski_memory');
+    const sm = localStorage.getItem('ski_style_memory');
+    const ss = localStorage.getItem('ski_style_seeds');
+    if (d)  S.deals       = JSON.parse(d);
+    if (b)  S.brands      = JSON.parse(b);
+    if (k)  S.apiKey      = k;
+    if (n)  S.teamName    = n;
+    if (m)  S.memory      = JSON.parse(m);
+    if (sm) S.styleMemory = JSON.parse(sm);
+    if (ss) S.styleSeeds  = ss;
   } catch(e) { console.error(e); }
 }
 
@@ -537,8 +540,9 @@ function save() {
     localStorage.setItem('ski_brands',   JSON.stringify(S.brands));
     localStorage.setItem('ski_apikey',   S.apiKey);
     localStorage.setItem('ski_teamname', S.teamName);
-    localStorage.setItem('ski_memory',   JSON.stringify(S.memory));
-    localStorage.setItem('ski_styles',   S.styles);
+    localStorage.setItem('ski_memory',       JSON.stringify(S.memory));
+    localStorage.setItem('ski_style_memory', JSON.stringify(S.styleMemory));
+    localStorage.setItem('ski_style_seeds',  S.styleSeeds);
   } catch(e) { console.error(e); }
 }
 
