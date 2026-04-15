@@ -163,6 +163,7 @@
   <button class="nav-tab active" data-tab="search" onclick="switchTab('search')">Search</button>
   <button class="nav-tab" data-tab="score" onclick="switchTab('score')">Score</button>
   <button class="nav-tab" data-tab="board" onclick="switchTab('board')">Deal Board</button>
+  <button class="nav-tab" data-tab="train" onclick="switchTab('train')">Train</button>
   <button class="nav-tab" data-tab="settings" onclick="switchTab('settings')">Settings</button>
 </nav>
 
@@ -306,6 +307,39 @@
     <div style="font-size:32px;">🎿</div>
     <p style="margin-top:8px;">No deals yet. Score a listing and save it here.</p>
   </div>
+</div>
+
+<!-- ══════════════ TRAIN ══════════════ -->
+<div id="tab-train" class="tab-content">
+  <div class="row" style="justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px;">
+    <div class="section-title" style="margin:0;">Style Training</div>
+    <div id="train-counter" style="font-size:11px;color:var(--muted);"></div>
+  </div>
+
+  <details id="train-seed-details" style="margin-bottom:16px;">
+    <summary style="cursor:pointer;color:var(--accent);font-size:11px;letter-spacing:1px;text-transform:uppercase;list-style:none;display:flex;align-items:center;gap:6px;">
+      <span>▸</span> Seed with example URLs <span style="color:var(--muted);font-weight:normal;text-transform:none;letter-spacing:0;">(optional)</span>
+    </summary>
+    <div class="card col" style="margin-top:10px;gap:10px;">
+      <p style="color:var(--muted);font-size:11px;line-height:1.6;">
+        Paste URLs of items you like — one per line. The AI will visit them and use their style as a reference.
+        Skip this once you have rated items.
+      </p>
+      <textarea id="seed-urls" placeholder="https://www.sellpy.se/item/...&#10;https://www.tradera.com/item/..." style="min-height:80px;" onblur="saveSeedUrls()"></textarea>
+    </div>
+  </details>
+
+  <div style="margin-bottom:20px;">
+    <button class="btn btn-primary" id="train-btn" onclick="runStyleSearch()">Find items ↗</button>
+  </div>
+
+  <div id="train-status" style="display:none;" class="row" style="margin-bottom:12px;">
+    <span class="spinner"></span>
+    <span style="color:var(--muted);font-size:12px;" id="train-status-text">Searching…</span>
+  </div>
+
+  <div id="train-results"></div>
+  <div id="style-memory-panel"></div>
 </div>
 
 <!-- ══════════════ SETTINGS ══════════════ -->
@@ -614,6 +648,185 @@ function updateMemoryCount() {
 }
 
 // ═══════════════════════════════════════════════
+//  TRAIN TAB
+// ═══════════════════════════════════════════════
+let styleResults = [];
+
+function saveSeedUrls() {
+  S.styleSeeds = document.getElementById('seed-urls').value;
+  save();
+}
+
+async function runStyleSearch() {
+  if (!S.apiKey) { toast('Set your API key in Settings', 'error'); switchTab('settings'); return; }
+
+  const btn       = document.getElementById('train-btn');
+  const status    = document.getElementById('train-status');
+  const statusTxt = document.getElementById('train-status-text');
+  const resultsDiv = document.getElementById('train-results');
+
+  btn.disabled = true; btn.innerHTML = '<span class="spinner"></span> Searching…';
+  status.style.display = 'flex'; statusTxt.textContent = 'Finding items that match your style…';
+  resultsDiv.innerHTML = '';
+  styleResults = [];
+
+  try {
+    const styleCtx  = buildStyleContext();
+    const seedLines = S.styleSeeds.trim().split('\n').filter(l => l.trim());
+    const seedCtx   = seedLines.length
+      ? `\n\n═══ SEED EXAMPLES FROM USER ═══\nThe user provided these specific listings as style references. Visit each URL and use their aesthetic as a search target:\n${seedLines.join('\n')}\n`
+      : '';
+    const systemPrompt = SEARCH_BASE + styleCtx + seedCtx;
+    const userMsg = (styleCtx || seedCtx)
+      ? 'Find 8-10 vintage ski/snowboard clothing listings that match the learned style preferences and seed examples above. Search tradera.com, vinted.se, sellpy.se, ebay.com, blocket.se, tise.com. Return as JSON array — same format as usual but add a "style_notes" field (max 10 words describing the key aesthetic of each item).'
+      : 'Find 8-10 interesting vintage ski/snowboard clothing listings across tradera.com, vinted.se, sellpy.se, ebay.com, blocket.se, tise.com. Return as JSON array with a "style_notes" field (max 10 words on key aesthetic).';
+
+    const results = await callClaudeSearch(userMsg, systemPrompt);
+    styleResults = results;
+    status.style.display = 'none';
+
+    if (!results.length) {
+      resultsDiv.innerHTML = `<div style="color:var(--muted);font-size:13px;padding:16px 0;">No results found. Try adding seed URLs or rating more items.</div>`;
+    } else {
+      resultsDiv.innerHTML = `
+        <div style="color:var(--muted);font-size:11px;letter-spacing:1px;text-transform:uppercase;margin-bottom:10px;">${results.length} items — rate each one to train your style</div>
+        <div class="deal-grid">${results.map((r, i) => styleResultHtml(r, i)).join('')}</div>`;
+    }
+  } catch(e) {
+    status.style.display = 'none';
+    resultsDiv.innerHTML = `<div class="result-card" style="border-color:var(--red);">
+      <div style="color:var(--red);font-weight:bold;margin-bottom:8px;">Search error</div>
+      <pre style="white-space:pre-wrap;color:var(--muted);font-size:11px;">${esc(e.message)}</pre>
+      <button class="btn btn-sm" style="margin-top:12px;" onclick="runStyleSearch()">Retry</button>
+    </div>`;
+  } finally {
+    btn.disabled = false; btn.innerHTML = 'Find items ↗';
+  }
+}
+
+function styleResultHtml(r, idx) {
+  const priceTxt = r.price_sek != null ? `${r.price_sek} SEK` : (r.price_raw || '?');
+  return `<div class="deal-card" id="style-card-${idx}">
+    <div class="deal-card-top">
+      <div class="deal-card-meta">
+        <div style="font-size:13px;font-weight:bold;margin-bottom:4px;">${esc(r.title||'Untitled')}</div>
+        <div class="row" style="gap:5px;flex-wrap:wrap;margin-bottom:4px;">
+          ${r.brand&&r.brand!=='unknown'?`<span class="tag">${esc(r.brand)}</span>`:''}
+          ${r.era&&r.era!=='unknown'?`<span class="tag">${esc(r.era)}</span>`:''}
+          ${r.platform?`<span class="tag tag-plat">${esc(r.platform)}</span>`:''}
+        </div>
+        ${r.style_notes?`<div style="font-size:11px;color:var(--accent);margin-top:2px;">↳ ${esc(r.style_notes)}</div>`:''}
+      </div>
+      <div style="font-size:15px;color:var(--green);font-weight:bold;white-space:nowrap;">${esc(priceTxt)}</div>
+    </div>
+    ${r.url?`<a href="${esc(r.url)}" target="_blank" rel="noopener" class="btn btn-sm" style="width:fit-content;">Open ↗</a>`:''}
+    <div class="deal-card-actions">
+      <button class="btn btn-sm" id="style-good-${idx}" onclick="rateStyleItem(${idx},'good')">Good</button>
+      <button class="btn btn-sm" id="style-bad-${idx}"  onclick="rateStyleItem(${idx},'bad')">Bad</button>
+      <button class="btn btn-sm" id="style-nope-${idx}" onclick="dismissStyleCard(${idx})">Not working</button>
+    </div>
+  </div>`;
+}
+
+function rateStyleItem(idx, rating) {
+  const r = styleResults[idx];
+  if (!r) return;
+
+  S.styleMemory = S.styleMemory.filter(m => m.url !== r.url);
+  S.styleMemory.push({
+    url:         r.url || '',
+    title:       r.title || '',
+    brand:       r.brand || 'unknown',
+    era:         r.era || 'unknown',
+    condition:   r.condition || 'unknown',
+    style_notes: r.style_notes || '',
+    rating,
+    ts: new Date().toISOString()
+  });
+  if (S.styleMemory.length > 60) S.styleMemory = S.styleMemory.slice(-60);
+  save();
+  updateTrainCounter();
+
+  const goodBtn = document.getElementById(`style-good-${idx}`);
+  const badBtn  = document.getElementById(`style-bad-${idx}`);
+  if (goodBtn) {
+    goodBtn.style.background  = rating === 'good' ? 'var(--green)' : '';
+    goodBtn.style.color       = rating === 'good' ? '#000' : '';
+    goodBtn.style.borderColor = rating === 'good' ? 'var(--green)' : '';
+  }
+  if (badBtn) {
+    badBtn.style.background   = rating === 'bad' ? 'var(--red)' : '';
+    badBtn.style.color        = rating === 'bad' ? '#fff' : '';
+    badBtn.style.borderColor  = rating === 'bad' ? 'var(--red)' : '';
+  }
+
+  renderStyleMemoryPanel();
+  toast(rating === 'good' ? 'Marked Good — style memory updated' : 'Marked Bad — style memory updated', 'success');
+}
+
+function dismissStyleCard(idx) {
+  const card = document.getElementById(`style-card-${idx}`);
+  if (card) card.style.display = 'none';
+}
+
+function renderStyleMemoryPanel() {
+  const panel = document.getElementById('style-memory-panel');
+  if (!panel) return;
+  if (!S.styleMemory.length) { panel.innerHTML = ''; return; }
+
+  panel.innerHTML = `
+    <hr>
+    <div class="section-title" style="margin-bottom:12px;">Rated Items <span style="color:var(--muted);font-weight:normal;font-size:10px;">(${S.styleMemory.length})</span></div>
+    <div class="col" style="gap:6px;">
+      ${S.styleMemory.map((m, i) => `
+        <div style="display:flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:8px 10px;font-size:11px;">
+          <button class="btn btn-sm" style="min-width:52px;background:${m.rating==='good'?'var(--green)':'var(--red)'};color:${m.rating==='good'?'#000':'#fff'};border-color:${m.rating==='good'?'var(--green)':'var(--red)'}" onclick="toggleStyleRating(${i})">${m.rating==='good'?'Good':'Bad'}</button>
+          <div style="flex:1;min-width:0;">
+            <div style="color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${esc(m.title||m.url)}</div>
+            <div style="color:var(--muted);margin-top:2px;">${esc([m.brand,m.era,m.style_notes].filter(Boolean).join(' · '))}</div>
+          </div>
+          <button class="btn btn-sm" style="color:var(--muted);padding:4px 7px;" onclick="removeStyleItem(${i})" title="Remove">×</button>
+        </div>
+      `).join('')}
+    </div>
+    <div style="margin-top:10px;">
+      <button class="btn btn-sm btn-danger" onclick="clearStyleMemory()">Clear style memory</button>
+    </div>`;
+}
+
+function toggleStyleRating(idx) {
+  if (!S.styleMemory[idx]) return;
+  S.styleMemory[idx].rating = S.styleMemory[idx].rating === 'good' ? 'bad' : 'good';
+  save();
+  renderStyleMemoryPanel();
+  updateTrainCounter();
+}
+
+function removeStyleItem(idx) {
+  S.styleMemory.splice(idx, 1);
+  save();
+  renderStyleMemoryPanel();
+  updateTrainCounter();
+}
+
+function clearStyleMemory() {
+  if (!confirm('Clear all style memory? The AI will lose its learned style calibration.')) return;
+  S.styleMemory = [];
+  save();
+  renderStyleMemoryPanel();
+  updateTrainCounter();
+  toast('Style memory cleared', 'info');
+}
+
+function updateTrainCounter() {
+  const el = document.getElementById('train-counter');
+  if (!el) return;
+  const good = S.styleMemory.filter(m => m.rating === 'good').length;
+  const bad  = S.styleMemory.filter(m => m.rating === 'bad').length;
+  el.textContent = S.styleMemory.length ? `● ${good} good · ${bad} bad` : '(no style memory yet)';
+}
+
+// ═══════════════════════════════════════════════
 //  NAV
 // ═══════════════════════════════════════════════
 function switchTab(name) {
@@ -625,6 +838,7 @@ function switchTab(name) {
   if (name === 'board')    renderBoard();
   if (name === 'settings') renderSettings();
   if (name === 'search')   renderSearchUI();
+  if (name === 'train')    renderTrain();
 }
 
 // ═══════════════════════════════════════════════
@@ -1136,6 +1350,13 @@ function importDeals(input) {
 // ═══════════════════════════════════════════════
 //  SETTINGS
 // ═══════════════════════════════════════════════
+function renderTrain() {
+  const seedEl = document.getElementById('seed-urls');
+  if (seedEl) seedEl.value = S.styleSeeds;
+  updateTrainCounter();
+  renderStyleMemoryPanel();
+}
+
 function renderSettings() {
   document.getElementById('api-key-input').value   = S.apiKey;
   document.getElementById('team-name-input').value = S.teamName;
